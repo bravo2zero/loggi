@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+
+    <appender name="FILE_APPENDER" class="org.apache.log4j.RollingFileAppender">
+        <param name="maxBackupIndex" value="100"/>
+        <param name="maxFileSize" value="104857600"/>
+        <param name="File" value="loggi.log"/>
+        <param name="Threshold" value="DEBUG"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} %-4p %c{1} [%t] %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="CONSOLE_APPENDER" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="DEBUG"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} %-4p %c{1} [%t] %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="de.dmc.loggi" additivity="false">
+        <appender-ref ref="FILE_APPENDER"/>
+    </logger>
+
+    <root>
+        <priority value="WARN"/>
+        <appender-ref ref="FILE_APPENDER"/>
+    </root>
+</log4j:configuration>

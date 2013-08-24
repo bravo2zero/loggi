@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="propertyConfiguration" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/loggi.properties</value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="false"/>
+        <property name="ignoreResourceNotFound" value="false"/>
+        <property name="order" value="2"/>
+    </bean>
+
+    <bean name="helpService" class="de.dmc.loggi.service.impl.HelpServiceImpl">
+        <property name="author" value="${project.author}"/>
+        <property name="projectVersion" value="${project.version}"/>
+        <property name="projectName" value="${project.name}"/>
+        <property name="projectUrl" value="${project.url}"/>
+        <property name="description" value="${project.description}"/>
+    </bean>
+
+    <bean name="configurationService" class="de.dmc.loggi.service.impl.ConfigurationServiceImpl"/>
+
+    <bean name="writeService" class="de.dmc.loggi.service.impl.H2WriteServiceImpl">
+        <property name="configuration" ref="configurationService"/>
+    </bean>
+
+    <bean name="readService" class="de.dmc.loggi.service.impl.ReadServiceImpl">
+        <property name="configuration" ref="configurationService"/>
+        <property name="writeService" ref="writeService"/>
+    </bean>
+
+
+</beans>
