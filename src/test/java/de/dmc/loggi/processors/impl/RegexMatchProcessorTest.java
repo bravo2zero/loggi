@@ -33,4 +33,15 @@ public class RegexMatchProcessorTest extends AbstractColumnProcessorTest {
         String result = processor.getColumnValue(record);
         assertEquals(result, "abc123");
     }
+
+    @Test
+    public void testGetColumnValueGroup() throws Exception {
+        RegexMatchProcessor processor = new RegexMatchProcessor(
+                createColumn("column1",
+                        createAttribute("regex", "(abc)(\\d{3})"),
+                        createAttribute("group","2")));
+        String record = "ab123 abc123 abc234 abc12";
+        String result = processor.getColumnValue(record);
+        assertEquals(result, "123");
+    }
 }
