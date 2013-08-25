@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author CptSpaetzle
  */
-public abstract class AbstractColumnProcessor<T> implements ColumnProcessor<T> {
+public abstract class AbstractColumnProcessor implements ColumnProcessor {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final String TAB = "\t";
@@ -53,7 +53,7 @@ public abstract class AbstractColumnProcessor<T> implements ColumnProcessor<T> {
     }
 
     @Override
-    abstract public T getColumnValue(String record);
+    abstract public String getColumnValue(String record);
 
     @Override
     public <V> V getAttributeValue(String key) {

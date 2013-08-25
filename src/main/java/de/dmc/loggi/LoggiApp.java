@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
+import java.io.IOException;
+
 /**
  * Main application starter
  */
@@ -45,6 +47,8 @@ public class LoggiApp {
      * All the magic goes here
      */
     private void start() {
+        // TODO implement cli option to test/validate template file
+
         try {
             if(commandLine.hasOption(Parameter.HELP.getShortName())){
                 help.printHelp(options);
@@ -63,7 +67,7 @@ public class LoggiApp {
             configurationService.initialize(templateFileName);
             configurationService.setSource(commandLine.getOptionValue(Parameter.SOURCE.getShortName()));
             writeService.initialize();
-            // TODO implement cli option to test/validate template file
+
             logger.debug("Using configuration template: \n {}", configurationService.currentConfigToString());
 
             ReadServiceImpl readService = (ReadServiceImpl) context.getBean("readService");
@@ -75,13 +79,22 @@ public class LoggiApp {
             }
             readService.process();
 
-            System.out.println("Press <CTRL>+<C> to stop...");
+            pauseUntilKeypressed();
             writeService.finalizeAndShutdown();
 
         } catch (Exception ex) {
             logger.error("Exception initializing Configuration Service", ex);
         }
 
+    }
+
+    private void pauseUntilKeypressed() {
+        try {
+            System.out.println("Go to http://localhost:8082 or press Enter to quit..."); // TODO remove this crappy hardcode later
+            System.in.read();
+        } catch (IOException e) {
+            // oops, nothing here
+        }
     }
 
     /**

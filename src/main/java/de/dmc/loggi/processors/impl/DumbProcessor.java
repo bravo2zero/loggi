@@ -13,10 +13,12 @@ import de.dmc.loggi.processors.MetaInfo;
 @MetaInfo(
         description = "Simplest case of processor. Just returning raw record value as java.lang.String.",
         attributes = {
-                @AttributeDef(name = "maxSize", description = "maximum column value size", defaultValue = "255")
+                @AttributeDef(name = DumbProcessor.ATTR_MAXSIZE, description = "maximum column value size", defaultValue = "255")
         }
 )
-public class DumbProcessor extends AbstractColumnProcessor<String> {
+public class DumbProcessor extends AbstractColumnProcessor {
+
+    public static final String ATTR_MAXSIZE = "maxSize";
 
     public DumbProcessor(Column column) throws ConfigurationException {
         super(column);
@@ -24,7 +26,7 @@ public class DumbProcessor extends AbstractColumnProcessor<String> {
 
     @Override
     public String getColumnValue(String record) {
-        int maxSize = Integer.valueOf(this.<String>getAttributeValue(ColumnProcessor.ATTR_MAXSIZE));
+        int maxSize = Integer.valueOf(this.<String>getAttributeValue(ATTR_MAXSIZE));
         int actualMaxSize = maxSize > record.length() ? record.length() : maxSize;
         return record == null ? "" : record.substring(0, actualMaxSize);
     }

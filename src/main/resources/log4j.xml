@@ -26,7 +26,7 @@
     </logger>
 
     <root>
-        <priority value="WARN"/>
+        <priority value="DEBUG"/>
         <appender-ref ref="FILE_APPENDER"/>
     </root>
 </log4j:configuration>

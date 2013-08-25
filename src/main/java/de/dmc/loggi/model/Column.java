@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author CptSpaetzle
  */
 public class Column {
     String name;
     String defaultValue;
-    String dataType = "varchar(255)"; // TODO add better h2 types support and description
+    String dataType = "varchar(255)";
+    String dataFormat = "";
     String processorName;
     List<Attribute> attributes;
 
@@ -44,6 +44,14 @@ public class Column {
 
     public void setDataType(String dataType) {
         this.dataType = dataType;
+    }
+
+    public String getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(String dataFormat) {
+        this.dataFormat = dataFormat;
     }
 
     public List<Attribute> getAttributes() {

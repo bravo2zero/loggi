@@ -42,8 +42,8 @@ public class HelpServiceImpl implements HelpService {
                 projectName, projectVersion, description, author, projectUrl);
         System.out.println(header);
         printUsage(options);
-        System.out.println(NEWLINE + "Available Column Processors: " + NEWLINE);
 
+        printHeader("Available Column Processors:");
         for (Class annotatedProcessor : getPackageClasses(PROCESSORS_PACKAGE)) {
             try {
                 System.out.println(AbstractColumnProcessor.getProcessorInfo(annotatedProcessor));
@@ -52,6 +52,13 @@ public class HelpServiceImpl implements HelpService {
             }
         }
 
+        printHeader("Supported Data Types:");
+
+
+    }
+
+    private void printHeader(String headerText){
+        System.out.println(NEWLINE + headerText + NEWLINE);
     }
 
     private Set<Class<?>> getPackageClasses(String packageName) {
