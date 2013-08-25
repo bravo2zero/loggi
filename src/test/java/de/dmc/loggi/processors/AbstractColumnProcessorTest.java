@@ -22,7 +22,7 @@ public class AbstractColumnProcessorTest {
     public void testInitializeProcessorNull() throws Exception{
         AbstractColumnProcessor abstractColumnProcessor = new AbstractColumnProcessor(null) {
             @Override
-            public Object getColumnValue(String record) {
+            public String getColumnValue(String record) {
                 return null;
             }
         };
