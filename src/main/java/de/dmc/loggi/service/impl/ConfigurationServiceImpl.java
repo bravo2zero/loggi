@@ -5,6 +5,7 @@ import de.dmc.loggi.model.Column;
 import de.dmc.loggi.model.Template;
 import de.dmc.loggi.processors.ColumnProcessor;
 import de.dmc.loggi.service.ConfigurationService;
+import org.apache.commons.cli.CommandLine;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         try {
             template = mapper.readValue(templatePath.toFile(), Template.class);
-
             processors = new ArrayList<>();
-
-            // TODO verify template first! (has columns, what to do with incorrect templates/column configs)
 
             for (Column column : template.getColumns()) {
                 initializeColumn(column);
@@ -56,8 +54,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             processors.add(processor);
 
         } catch (Exception e) {
-            // any failed to init processor is logged and skipped
-            logger.error("Exception instantiating column, name:" + column.getName() + " processor:" + column.getProcessorName(), e);
+            logger.error("Exception instantiating column, name:" + column.getName() + " processor:" + column.getProcessorName()+". Skipped.", e);
         }
     }
 

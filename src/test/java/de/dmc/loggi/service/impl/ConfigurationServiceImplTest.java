@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
  *
  * @author CptSpaetzle
  */
-public class ConfigurationServiceImplNGTest {
+public class ConfigurationServiceImplTest {
 
     @Test(expectedExceptions = ConfigurationException.class)
     public void testNullInitialize() throws Exception {

@@ -1,8 +1,7 @@
 package de.dmc.loggi.service.impl;
 
-import de.dmc.loggi.processors.ColumnProcessor;
-import de.dmc.loggi.service.ReadService;
 import de.dmc.loggi.service.ConfigurationService;
+import de.dmc.loggi.service.ReadService;
 import de.dmc.loggi.service.WriteService;
 import de.dmc.loggi.threads.NamingThreadFactory;
 import org.slf4j.Logger;
@@ -26,17 +25,23 @@ public class ReadServiceImpl implements ReadService {
     private ConfigurationService configuration;
     private WriteService writeService;
     private ThreadPoolExecutor executor;
-    private int numberOfThreads = 4;
+    private int numberOfThreads = 0;
+    private int maxRecordLength = 10000;
 
-    //TODO limit max record length (wrong separator?)
     // TODO put some progress indication in logs
 
     @Override
     public void process() {
+        if (numberOfThreads == 0) {
+            // use CPUs-1 by default
+            int numberOfCPUs = Runtime.getRuntime().availableProcessors();
+            numberOfThreads = numberOfCPUs > 1 ? numberOfCPUs - 1 : numberOfCPUs;
+        }
+        logger.debug("Processing with {} threads", numberOfThreads);
         executor = new ThreadPoolExecutor(numberOfThreads, numberOfThreads, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new NamingThreadFactory("ColumnProcessor"));
 
         // init phase
-        Pattern separator = Pattern.compile("(.*)(" + configuration.getTemplate().getRecordSeparator()+")(.*)");
+        Pattern separator = Pattern.compile("(.*)(" + configuration.getTemplate().getRecordSeparator() + ")(.*)");
 
 
         // read file
@@ -44,30 +49,34 @@ public class ReadServiceImpl implements ReadService {
             String currentLine = null;
             StringBuilder currentRecord = new StringBuilder();
             while ((currentLine = reader.readLine()) != null) {
+                if (currentRecord.length() > maxRecordLength) {
+                    throw new IOException("maxRecordLength overflow, check if your separator is correct!");
+                }
+
                 Matcher matcher = separator.matcher(currentLine);
-                if(matcher.matches()){
+                if (matcher.matches()) {
                     currentRecord.append(matcher.group(1));
-                    if(currentRecord.length() > 0){
+                    if (currentRecord.length() > 0) {
                         executor.submit(new RecordTask(currentRecord.toString()));
                         currentRecord = new StringBuilder();
                     }
                     currentRecord.append(matcher.group(2) + matcher.group(3));
-                }else{
+                } else {
                     currentRecord.append(currentLine);
                 }
             }
             executor.submit(new RecordTask(currentRecord.toString()));
         } catch (IOException ex) {
 
-            logger.error("Error reading source ["+configuration.getSource().toString()+"]", ex);
+            logger.error("Error reading source [" + configuration.getSource().toString() + "]", ex);
         }
 
         //wait for the executor to finish
         executor.shutdown();
         try {
-            executor.awaitTermination(Long.MAX_VALUE,TimeUnit.NANOSECONDS);
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
-            logger.error("Interrupted executor termination",e);
+            logger.error("Interrupted executor termination", e);
         }
     }
 
@@ -83,7 +92,11 @@ public class ReadServiceImpl implements ReadService {
         this.writeService = writeService;
     }
 
-    class RecordTask implements Callable<Object>{
+    public void setMaxRecordLength(int maxRecordLength) {
+        this.maxRecordLength = maxRecordLength;
+    }
+
+    class RecordTask implements Callable<Object> {
         private String record;
 
         public RecordTask(String record) {
@@ -95,9 +108,8 @@ public class ReadServiceImpl implements ReadService {
             writeService.processRecord(record);
             return null;
         }
-        
+
     }
 
 
-    
 }

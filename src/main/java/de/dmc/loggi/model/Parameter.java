@@ -7,7 +7,9 @@ package de.dmc.loggi.model;
  public enum Parameter {
     TEMPLATE("t", "template", "path to template.json file", true, false),
     SOURCE("s", "source", "Source log file", true, false),
-    HELP("h", "help", "Display help and usage info", false, false);
+    HELP("h", "help", "Display help and usage info", false, false),
+    MAX_RECORD_LENGTH("m","max-length","Maximum length for single record before separator alert goes off",true,false),
+    PROCESSOR_THREADS("p","threads","Number of threads for column processors, default is (numberOfCPUs-1)",true,false);
     
     String shortName;
     String longName;

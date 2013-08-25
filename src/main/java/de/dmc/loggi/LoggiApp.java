@@ -4,8 +4,8 @@ import de.dmc.loggi.model.Parameter;
 import de.dmc.loggi.service.ConfigurationService;
 
 import de.dmc.loggi.service.HelpService;
-import de.dmc.loggi.service.ReadService;
 import de.dmc.loggi.service.WriteService;
+import de.dmc.loggi.service.impl.ReadServiceImpl;
 import org.apache.commons.cli.*;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.slf4j.Logger;
@@ -63,11 +63,18 @@ public class LoggiApp {
             configurationService.initialize(templateFileName);
             configurationService.setSource(commandLine.getOptionValue(Parameter.SOURCE.getShortName()));
             writeService.initialize();
-            // TODO number of threads should be overrideable from cli, auto set to numberOfCPUs-1 (minor)
             // TODO implement cli option to test/validate template file
             logger.debug("Using configuration template: \n {}", configurationService.currentConfigToString());
-            ReadService readService = (ReadService) context.getBean("readService");
+
+            ReadServiceImpl readService = (ReadServiceImpl) context.getBean("readService");
+            if(commandLine.hasOption(Parameter.MAX_RECORD_LENGTH.getShortName())){
+                readService.setMaxRecordLength(Integer.valueOf(commandLine.getOptionValue(Parameter.MAX_RECORD_LENGTH.getShortName())));
+            }
+            if(commandLine.hasOption(Parameter.PROCESSOR_THREADS.getShortName())){
+                readService.setNumberOfThreads(Integer.valueOf(commandLine.getOptionValue(Parameter.PROCESSOR_THREADS.getShortName())));
+            }
             readService.process();
+
             System.out.println("Press <CTRL>+<C> to stop...");
             writeService.finalizeAndShutdown();
 

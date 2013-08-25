@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * //TODO should we be able to create column processors which return other columns dependent values (calc)?
+ * //TODO should we be able to create column processors which return other columns dependent values
  * @author CptSpaetzle
  */
 public class H2WriteServiceImpl implements WriteService {
@@ -34,7 +34,7 @@ public class H2WriteServiceImpl implements WriteService {
         for (int i = 0; i < configuration.getProcessors().size(); i++) {
             ColumnProcessor processor = configuration.getProcessors().get(i);
             fields[i] = processor.getColumn().getName();
-            values[i] = "'" + processor.getColumnValue(record) + "'"; // TODO :(
+            values[i] = "'" + processor.getColumnValue(record) + "'";
         }
 
         try {
