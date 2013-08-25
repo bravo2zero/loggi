@@ -1,8 +1,10 @@
 package de.dmc.loggi.service.impl;
 
+import de.dmc.loggi.model.Parameter;
 import de.dmc.loggi.processors.ColumnProcessor;
 import de.dmc.loggi.service.ConfigurationService;
 import de.dmc.loggi.service.WriteService;
+import org.apache.commons.cli.CommandLine;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.tools.Server;
 import org.slf4j.Logger;
@@ -23,10 +25,15 @@ public class H2WriteServiceImpl implements WriteService {
 
     public static final String TABLE_NAME = "records";
     public static final String H2_DATETIME = "yyyy-MM-dd hh:mm:ss";
+    public static final String H2_SERVER_URI = "jdbc:h2:mem:loggi";
 
     private ConfigurationService configuration;
     private JdbcConnectionPool cp;
     private Server server;
+
+    private String username = "user";
+    private String password = "password";
+    private String port = "8082";
 
     @Override
     public void processRecord(String record) {
@@ -80,11 +87,22 @@ public class H2WriteServiceImpl implements WriteService {
     @Override
     public void initialize() throws Exception {
         // TODO configure either memory or hdd storage from configuration setting
-        // TODO change later port, usr,pwd (from config)
+
+        CommandLine commandLine = configuration.getCommandLine();
+        if(commandLine.hasOption(Parameter.H2_SERVER_PORT.getShortName())){
+            port = commandLine.getOptionValue(Parameter.H2_SERVER_PORT.getShortName());
+        }
+        if(commandLine.hasOption(Parameter.H2_USERNAME.getShortName())){
+            username = commandLine.getOptionValue(Parameter.H2_USERNAME.getShortName());
+        }
+        if(commandLine.hasOption(Parameter.H2_PASSWORD.getShortName())){
+            password = commandLine.getOptionValue(Parameter.H2_PASSWORD.getShortName());
+        }
+
         Class.forName("org.h2.Driver").newInstance();
-        cp = JdbcConnectionPool.create("jdbc:h2:mem:loggi", "user", "password");
+        cp = JdbcConnectionPool.create(H2_SERVER_URI, username, password);
         // create & start embedded H2 Server
-        server = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082").start();
+        server = Server.createWebServer("-web", "-webAllowOthers", "-webPort", port).start();
         Connection conn = cp.getConnection();
 
         // create table

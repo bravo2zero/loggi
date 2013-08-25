@@ -7,6 +7,7 @@ package de.dmc.loggi.service;
 import de.dmc.loggi.exceptions.ConfigurationException;
 import de.dmc.loggi.model.Template;
 import de.dmc.loggi.processors.ColumnProcessor;
+import org.apache.commons.cli.CommandLine;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -23,6 +24,10 @@ public interface ConfigurationService {
     void initialize(String templateFile) throws ConfigurationException;
     
     Template getTemplate();
+
+    CommandLine getCommandLine();
+
+    void setCommandLine(CommandLine commandLine);
 
     List<ColumnProcessor> getProcessors();
     

@@ -2,7 +2,6 @@ package de.dmc.loggi;
 
 import de.dmc.loggi.model.Parameter;
 import de.dmc.loggi.service.ConfigurationService;
-
 import de.dmc.loggi.service.HelpService;
 import de.dmc.loggi.service.WriteService;
 import de.dmc.loggi.service.impl.ReadServiceImpl;
@@ -50,12 +49,12 @@ public class LoggiApp {
         // TODO implement cli option to test/validate template file
 
         try {
-            if(commandLine.hasOption(Parameter.HELP.getShortName())){
+            if (commandLine.hasOption(Parameter.HELP.getShortName())) {
                 help.printHelp(options);
                 System.exit(0);
             }
 
-            if(!commandLine.hasOption(Parameter.SOURCE.getShortName())){
+            if (!commandLine.hasOption(Parameter.SOURCE.getShortName())) {
                 help.printUsage(options);
                 System.exit(0);
             }
@@ -64,6 +63,7 @@ public class LoggiApp {
 
             WriteService writeService = (WriteService) context.getBean("writeService");
             ConfigurationService configurationService = (ConfigurationService) context.getBean("configurationService");
+            configurationService.setCommandLine(commandLine);
             configurationService.initialize(templateFileName);
             configurationService.setSource(commandLine.getOptionValue(Parameter.SOURCE.getShortName()));
             writeService.initialize();
@@ -71,12 +71,6 @@ public class LoggiApp {
             logger.debug("Using configuration template: \n {}", configurationService.currentConfigToString());
 
             ReadServiceImpl readService = (ReadServiceImpl) context.getBean("readService");
-            if(commandLine.hasOption(Parameter.MAX_RECORD_LENGTH.getShortName())){
-                readService.setMaxRecordLength(Integer.valueOf(commandLine.getOptionValue(Parameter.MAX_RECORD_LENGTH.getShortName())));
-            }
-            if(commandLine.hasOption(Parameter.PROCESSOR_THREADS.getShortName())){
-                readService.setNumberOfThreads(Integer.valueOf(commandLine.getOptionValue(Parameter.PROCESSOR_THREADS.getShortName())));
-            }
             readService.process();
 
             pauseUntilKeypressed();
@@ -112,21 +106,23 @@ public class LoggiApp {
         this.options = new Options();
 
         for (Parameter param : Parameter.values()) {
-            OptionBuilder option = OptionBuilder
-                    .withLongOpt(param.getLongName())
+            OptionBuilder builder = OptionBuilder
                     .withDescription(param.getDescription())
                     .isRequired(param.isRequired());
+
             if (param.isHasArgument()) {
-                option.hasArg();
-                option.withArgName(param.getLongName() + "Arg");
+                builder.hasArg();
+                builder.withArgName(param.getLongName() + "Arg");
             }
-            options.addOption(option.create(param.getShortName()));
+            Option option = builder.create(param.getShortName());
+            if(!param.getLongName().isEmpty()){
+            option.setLongOpt(param.getLongName());
+            }
+            options.addOption(option);
         }
 
         this.commandLine = parser.parse(options, args);
     }
-
-
 
 
 }

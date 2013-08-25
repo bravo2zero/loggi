@@ -1,9 +1,11 @@
 package de.dmc.loggi.service.impl;
 
+import de.dmc.loggi.model.Parameter;
 import de.dmc.loggi.service.ConfigurationService;
 import de.dmc.loggi.service.ReadService;
 import de.dmc.loggi.service.WriteService;
 import de.dmc.loggi.threads.NamingThreadFactory;
+import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +34,9 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public void process() {
+        initialize();
         if (numberOfThreads == 0) {
-            // use CPUs-1 by default
+            // (numberOfProcessors - 1) by default
             int numberOfCPUs = Runtime.getRuntime().availableProcessors();
             numberOfThreads = numberOfCPUs > 1 ? numberOfCPUs - 1 : numberOfCPUs;
         }
@@ -76,7 +79,17 @@ public class ReadServiceImpl implements ReadService {
         try {
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
-            logger.error("Interrupted executor termination", e);
+            logger.error("Interrupted ThreadPoolExecutor termination", e);
+        }
+    }
+
+    private void initialize() {
+        CommandLine commandLine = configuration.getCommandLine();
+        if(commandLine.hasOption(Parameter.MAX_RECORD_LENGTH.getShortName())){
+            setMaxRecordLength(Integer.valueOf(commandLine.getOptionValue(Parameter.MAX_RECORD_LENGTH.getShortName())));
+        }
+        if(commandLine.hasOption(Parameter.PROCESSOR_THREADS.getShortName())){
+            setNumberOfThreads(Integer.valueOf(commandLine.getOptionValue(Parameter.PROCESSOR_THREADS.getShortName())));
         }
     }
 

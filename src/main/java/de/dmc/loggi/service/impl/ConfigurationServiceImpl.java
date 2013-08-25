@@ -22,6 +22,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private Template template;
     private List<ColumnProcessor> processors;
     private Path sourceFile;
+    private CommandLine commandLine;
+
 
     @Override
     public void initialize(String templateLocation) throws ConfigurationException {
@@ -66,6 +68,16 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Override
     public Template getTemplate() {
         return template;
+    }
+
+    @Override
+    public CommandLine getCommandLine() {
+        return commandLine;
+    }
+
+    @Override
+    public void setCommandLine(CommandLine commandLine) {
+        this.commandLine = commandLine;
     }
 
     @Override

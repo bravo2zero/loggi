@@ -2,15 +2,19 @@ package de.dmc.loggi.model;
 
 /**
  * Prototyping class to configure CLI parameters without boilerplate code.
+ *
  * @author CptSpaetzle
  */
- public enum Parameter {
+public enum Parameter {
     TEMPLATE("t", "template", "path to template.json file", true, false),
     SOURCE("s", "source", "Source log file", true, false),
     HELP("h", "help", "Display help and usage info", false, false),
-    MAX_RECORD_LENGTH("m","max-length","Maximum length for single record before separator alert goes off",true,false),
-    PROCESSOR_THREADS("p","threads","Number of threads for column processors, default is (numberOfCPUs-1)",true,false);
-    
+    MAX_RECORD_LENGTH("maxRecordLength","", "Maximum length for single record before separator alert goes off", true, false),
+    PROCESSOR_THREADS("threads", "", "Number of threads for column processors, default is (numberOfCPUs-1)", true, false),
+    H2_SERVER_PORT("port", "", "H2 Console port", true, false),
+    H2_USERNAME("user", "", "username for H2 Console", true, false),
+    H2_PASSWORD("password", "", "password for H2 Console", true, false);
+
     String shortName;
     String longName;
     String description;
@@ -64,5 +68,5 @@ package de.dmc.loggi.model;
     public void setRequired(boolean required) {
         this.required = required;
     }
-    
+
 }
