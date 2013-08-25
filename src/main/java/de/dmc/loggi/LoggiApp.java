@@ -91,7 +91,6 @@ public class LoggiApp {
         DOMConfigurator.configure(LoggiApp.class.getClassLoader().getResource("log4j.xml"));
         context = new GenericXmlApplicationContext("classpath:sp-loggi.xml");
         help = (HelpService) context.getBean("helpService");
-
     }
 
     public void initializeOptions(String[] args) throws ParseException {

@@ -10,7 +10,7 @@
     <name>loggi</name>
 
     <description>Logs parsing and analysing tool</description>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/CptSpaetzle/loggi</url>
 
 
     <properties>
