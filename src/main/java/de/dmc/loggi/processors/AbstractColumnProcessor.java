@@ -22,9 +22,14 @@ public abstract class AbstractColumnProcessor<T> implements ColumnProcessor<T> {
     protected Map<String, Object> attributeMap = new HashMap<>();
 
     public AbstractColumnProcessor(Column column) throws ConfigurationException {
+        initializeProcessor(column);
+    }
+
+    protected void initializeProcessor(Column column)throws ConfigurationException{
         if (column == null) {
             throw new ConfigurationException("Cannot create ColumnProcessor with null column");
         }
+
         this.column = column;
         // get values from config template
         Map<String, String> config = new HashMap<>();

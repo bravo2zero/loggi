@@ -24,6 +24,8 @@ public class DumbProcessor extends AbstractColumnProcessor<String> {
 
     @Override
     public String getColumnValue(String record) {
-        return record == null ? "" : record.substring(0,Integer.valueOf(this.<String>getAttributeValue(ColumnProcessor.ATTR_MAXSIZE)));
+        int maxSize = Integer.valueOf(this.<String>getAttributeValue(ColumnProcessor.ATTR_MAXSIZE));
+        int actualMaxSize = maxSize > record.length() ? record.length() : maxSize;
+        return record == null ? "" : record.substring(0, actualMaxSize);
     }
 }

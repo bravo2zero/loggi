@@ -1,7 +1,7 @@
 package de.dmc.loggi.model;
 
 /**
- *
+ * Prototyping class to configure CLI parameters without boilerplate code.
  * @author CptSpaetzle
  */
  public enum Parameter {
