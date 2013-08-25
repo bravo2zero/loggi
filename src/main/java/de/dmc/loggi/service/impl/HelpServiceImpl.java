@@ -52,8 +52,7 @@ public class HelpServiceImpl implements HelpService {
             }
         }
 
-        printHeader("Supported Data Types:");
-
+        // TODO printHeader("Supported Data Types:");
 
     }
 
