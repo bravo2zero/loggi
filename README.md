@@ -29,24 +29,20 @@ How to build?
 How to use?
 -----------
 Loggi is a command line tool to analyse practically any log file. The idea is to write a json based template configuration file to let loggi know how exactly you need the log file to be parsed:
-* Create template file according to your log format and requirements (check example [template.json](template.json));
+* Create template file according to your log format and requirements. Check example [template.json](template.json) and see Wiki documentation on [Template File Format](https://github.com/CptSpaetzle/loggi/wiki/Template-File-Format)
 * Run loggi, providing source log file:
 
   ``` bash
   java -jar loggi.jar -s ${source.log.file}
   ```
-* Once you see a prompt, you can access results through browser at *http://localhost:8082*:
+* Once you see a prompt, you can access results through browser (default *http://localhost:8082*):
 <pre>
 User: user
 Password: password
 </pre>
 * Use H2 Console to manipulate your logs and make further analisys (table 'records').
-* Get more help on loggi with (parameters, currently available processor types and configuration):
+* Get more help on loggi from [command-line](https://github.com/CptSpaetzle/loggi/wiki/Help) (parameters, currently available processor types and configuration)
 
-  ```bash
-  java -jar loggi.jar --help
-  ```
-
-How to contribute
------------------
-Of course the main reason to put Loggi on GitHub was to support the spirit of an open source software development, letting as much people as possible to use and improve this software. Please feel free to contact [author](https://github.com/CptSpaetzle) if you want to become a Contributor. Any other kind of feedback is very much appreciated.
+How to contribute?
+------------------
+Of course the main reason to put Loggi on GitHub was to support the spirit of an open source software development, letting as much people as possible to use and improve this tool. Please feel free to contact [author](https://github.com/CptSpaetzle) if you want to become a Contributor. Any other kind of feedback is very much appreciated.
