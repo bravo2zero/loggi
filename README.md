@@ -13,11 +13,13 @@ How to build?
 * Maven
 
 1. Get a copy of the main git repo:
+
 ```bash
 git clone https://github.com/CptSpaetzle/loggi.git
 ```
 2. Build loggi using Maven:
-```bash
+
+``` bash
 mvn clean install
 ```
 3. You will find the final jar package in `${project.base.dir}/target/` folder.
@@ -27,7 +29,8 @@ How to use?
 Loggi is a command line tool to analyse practically any log file. The idea is to write a json based template configuration file to let loggi know how exactly you need the log file to be parsed:
 * Create template file according to your log format and requirements (check example `template.json`);
 * Run loggi, providing source log file:
-```bash
+
+``` bash
 java -jar loggi.jar -s ${source.log.file}
 ```
 * Once you see a prompt, you can access results through browser at *http://localhost:8082*:
@@ -37,6 +40,7 @@ Password: password
 </pre>
 * Use H2 Console to manipulate your logs and make further analisys (table 'records').
 * Get more help on loggi with (parameters, currently available processor types and configuration):
+
 ```bash
 java -jar loggi.jar --help
 ```
