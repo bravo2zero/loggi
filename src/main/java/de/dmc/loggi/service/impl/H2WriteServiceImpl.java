@@ -91,7 +91,7 @@ public class H2WriteServiceImpl implements WriteService {
             return columnValue;
         }
         // adjust date to H2 internal format
-        if (dataType.toLowerCase().startsWith("datetime")) {
+        if (dataType.toLowerCase().startsWith("datetime") && !dataFormat.isEmpty()) {
             SimpleDateFormat dt = new SimpleDateFormat(dataFormat);
             Date date = dt.parse(columnValue);
             SimpleDateFormat h2dt = new SimpleDateFormat(H2_DATETIME);

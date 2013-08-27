@@ -58,7 +58,7 @@ public abstract class AbstractColumnProcessor implements ColumnProcessor {
         transformers = new ArrayList<>();
         for (Transformer transformerModel : column.getTransformers()) {
             try {
-                Class processorClass = Class.forName(column.getProcessorName());
+                Class processorClass = Class.forName(transformerModel.getType());
                 Column pseudoColumn = new Column();
                 pseudoColumn.setAttributes(transformerModel.getAttributes());
                 ColumnProcessor transformer = (ColumnProcessor) processorClass.getConstructor(Column.class).newInstance(pseudoColumn);
