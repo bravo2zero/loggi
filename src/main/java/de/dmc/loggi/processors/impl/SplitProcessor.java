@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 @MetaInfo(
         description = "Record string is to be split into columns, requested index column value is returned",
         attributes = {
-                @AttributeDef(name = SplitProcessor.ATTR_SEPARATOR, description = "separator regexp to split record string with", defaultValue = "|"),
+                @AttributeDef(name = SplitProcessor.ATTR_SEPARATOR, description = "separator regexp to split record string with", defaultValue = "\\|"),
                 @AttributeDef(name = SplitProcessor.ATTR_COLUMN, description = "column index to return as a column value (zero based)", defaultValue = "0")
         }
 )
