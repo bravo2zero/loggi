@@ -16,6 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.author>Ivan Zinchenko aka CptSpaetzle (izinchenko@gmail.com)</project.author>
+        <spring.version>3.2.1.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -30,7 +31,12 @@
         <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>3.2.1.RELEASE</version>
+        <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <!--Logging-->
         <dependency>
@@ -130,6 +136,10 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>de.dmc.loggi.LoggiApp</mainClass>
+                                </transformer>
+                                <!--Prevent Shade from overwriting spring.schemas so that app can work in offline using jar's xsds-->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
                                 </transformer>
                             </transformers>
                         </configuration>
