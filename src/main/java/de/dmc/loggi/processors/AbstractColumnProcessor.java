@@ -3,10 +3,13 @@ package de.dmc.loggi.processors;
 import de.dmc.loggi.exceptions.ConfigurationException;
 import de.dmc.loggi.model.Attribute;
 import de.dmc.loggi.model.Column;
+import de.dmc.loggi.model.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,15 +20,15 @@ public abstract class AbstractColumnProcessor implements ColumnProcessor {
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final String TAB = "\t";
     protected Column column;
-
-
     protected Map<String, Object> attributeMap = new HashMap<>();
+    private List<ColumnProcessor> transformers;
 
     public AbstractColumnProcessor(Column column) throws ConfigurationException {
         initializeProcessor(column);
     }
 
-    protected void initializeProcessor(Column column)throws ConfigurationException{
+    protected void initializeProcessor(Column column) throws ConfigurationException {
+
         if (column == null) {
             throw new ConfigurationException("Cannot create ColumnProcessor with null column");
         }
@@ -50,10 +53,32 @@ public abstract class AbstractColumnProcessor implements ColumnProcessor {
         } else {
             throw new ConfigurationException("Missing MetaInfo for ColumnProcessor class: " + this.getClass().getName());
         }
+
+        // initialize transformers
+        transformers = new ArrayList<>();
+        for (Transformer transformerModel : column.getTransformers()) {
+            try {
+                Class processorClass = Class.forName(column.getProcessorName());
+                Column pseudoColumn = new Column();
+                pseudoColumn.setAttributes(transformerModel.getAttributes());
+                ColumnProcessor transformer = (ColumnProcessor) processorClass.getConstructor(Column.class).newInstance(pseudoColumn);
+                transformers.add(transformer);
+            } catch (Exception e) {
+                logger.error("Error initializing transformer of type " + transformerModel.getType() + " in column [" + column.getName() + "]", e);
+            }
+        }
     }
 
     @Override
-    abstract public String getColumnValue(String record);
+    public String getColumnValue(String record) {
+        String columnValue = getProcessedValue(record);
+        for (ColumnProcessor transformer : transformers) {
+            columnValue = transformer.getColumnValue(columnValue);
+        }
+        return columnValue;
+    }
+
+    abstract public String getProcessedValue(String record);
 
     @Override
     public <V> V getAttributeValue(String key) {
@@ -80,4 +105,5 @@ public abstract class AbstractColumnProcessor implements ColumnProcessor {
     public Column getColumn() {
         return column;
     }
+
 }

@@ -25,6 +25,11 @@ public class AbstractColumnProcessorTest {
             public String getColumnValue(String record) {
                 return null;
             }
+
+            @Override
+            public String getProcessedValue(String record) {
+                return null;
+            }
         };
     }
 

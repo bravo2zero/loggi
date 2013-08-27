@@ -33,7 +33,7 @@ public class RegexMatchProcessor extends AbstractColumnProcessor {
     }
 
     @Override
-    public String getColumnValue(String record) {
+    public String getProcessedValue(String record) {
 
         Pattern pattern = Pattern.compile(this.<String>getAttributeValue(ATTR_REGEX));
         Matcher matcher = pattern.matcher(record);

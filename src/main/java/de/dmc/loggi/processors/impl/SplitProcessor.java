@@ -33,7 +33,7 @@ public class SplitProcessor extends AbstractColumnProcessor {
     }
 
     @Override
-    public String getColumnValue(String record) {
+    public String getProcessedValue(String record) {
 
         String[] columns = record.split(this.<String>getAttributeValue(ATTR_SEPARATOR));
 

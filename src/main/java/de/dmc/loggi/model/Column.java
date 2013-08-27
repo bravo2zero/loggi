@@ -13,6 +13,7 @@ public class Column {
     String dataFormat = "";
     String processorName;
     List<Attribute> attributes;
+    List<Transformer> transformers;
 
     public String getName() {
         return name;
@@ -66,4 +67,15 @@ public class Column {
         this.attributes = attributes;
     }
 
+    public List<Transformer> getTransformers() {
+        if(transformers == null)
+        {
+            transformers = new ArrayList<>();
+        }
+        return transformers;
+    }
+
+    public void setTransformers(List<Transformer> transformers) {
+        this.transformers = transformers;
+    }
 }
