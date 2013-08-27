@@ -27,10 +27,10 @@ public class FileReadServiceImplTest {
 
     @Test
     public void testRegex(){
-        Pattern pattern = Pattern.compile("(.*)(abc)(.*)");
-        Matcher matcher = pattern.matcher("123abc456");
-        if(matcher.matches()){
-            System.out.println(matcher.group());
+        Pattern pattern = Pattern.compile("\\((\\d+?)\\)");
+        Matcher matcher = pattern.matcher("varchar2(255)");
+        if(matcher.find()){
+            System.out.println(matcher.group(1));
         }
     }
 

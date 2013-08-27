@@ -15,6 +15,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author CptSpaetzle
@@ -26,6 +28,8 @@ public class H2WriteServiceImpl implements WriteService {
     public static final String TABLE_NAME = "records";
     public static final String H2_DATETIME = "yyyy-MM-dd hh:mm:ss";
     public static final String H2_SERVER_URI = "jdbc:h2:mem:loggi";
+
+    public static final Pattern REGEX_PRECISION = Pattern.compile("\\((\\d+?)\\)");
 
     private ConfigurationService configuration;
     private JdbcConnectionPool cp;
@@ -72,9 +76,21 @@ public class H2WriteServiceImpl implements WriteService {
     }
 
     private String getFormattedValue(String columnValue, String dataType, String dataFormat) throws Exception {
+        // trim value down to varchar limit
+        if(dataType.toLowerCase().startsWith("varchar")){
+            Matcher matcher = REGEX_PRECISION.matcher(dataType);
+            if(matcher.find()){
+                int precision = Integer.valueOf(matcher.group(1));
+                int maxSize = precision > columnValue.length() ? columnValue.length() : precision;
+                return "'" + columnValue.substring(0, maxSize) + "'";
+            }
+        }
+
+        // "support" for int values
         if (dataType.toLowerCase().startsWith("int")) {
             return columnValue;
         }
+        // adjust date to H2 internal format
         if (dataType.toLowerCase().startsWith("datetime")) {
             SimpleDateFormat dt = new SimpleDateFormat(dataFormat);
             Date date = dt.parse(columnValue);
