@@ -15,7 +15,7 @@
         <property name="order" value="2"/>
     </bean>
 
-    <bean name="helpService" class="de.dmc.loggi.service.impl.HelpServiceImpl">
+    <bean name="helpService" class="de.loggi.service.impl.HelpServiceImpl">
         <property name="author" value="${project.author}"/>
         <property name="projectVersion" value="${project.version}"/>
         <property name="projectName" value="${project.name}"/>
@@ -23,13 +23,13 @@
         <property name="description" value="${project.description}"/>
     </bean>
 
-    <bean name="configurationService" class="de.dmc.loggi.service.impl.ConfigurationServiceImpl"/>
+    <bean name="configurationService" class="de.loggi.service.impl.ConfigurationServiceImpl"/>
 
-    <bean name="writeService" class="de.dmc.loggi.service.impl.H2WriteServiceImpl">
+    <bean name="writeService" class="de.loggi.service.impl.H2WriteServiceImpl">
         <property name="configuration" ref="configurationService"/>
     </bean>
 
-    <bean name="readService" class="de.dmc.loggi.service.impl.ReadServiceImpl">
+    <bean name="readService" class="de.loggi.service.impl.ReadServiceImpl">
         <property name="configuration" ref="configurationService"/>
         <property name="writeService" ref="writeService"/>
     </bean>

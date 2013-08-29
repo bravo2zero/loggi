@@ -1,9 +1,9 @@
-21.08.2013 19:20:50 ERROR ConfigurationService [main] Exception instantiating column processor with name [de.dmc.loggi.processors.impl.StringProcessor]
-java.lang.InstantiationException: de.dmc.loggi.processors.impl.StringProcessor
+21.08.2013 19:20:50 ERROR ConfigurationService [main] Exception instantiating column processor with name [de.loggi.processors.impl.StringProcessor]
+java.lang.InstantiationException: de.loggi.processors.impl.StringProcessor
 	at java.lang.Class.newInstance(Class.java:359)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImpl.initializeColumnProcessor(ConfigurationServiceImpl.java:56)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImpl.initialize(ConfigurationServiceImpl.java:42)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImplNGTest.testInitialize(ConfigurationServiceImplNGTest.java:32)
+	at de.loggi.service.impl.ConfigurationServiceImpl.initializeColumnProcessor(ConfigurationServiceImpl.java:56)
+	at de.loggi.service.impl.ConfigurationServiceImpl.initialize(ConfigurationServiceImpl.java:42)
+	at de.loggi.service.impl.ConfigurationServiceImplNGTest.testInitialize(ConfigurationServiceImplNGTest.java:32)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -29,12 +29,12 @@ java.lang.InstantiationException: de.dmc.loggi.processors.impl.StringProcessor
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:202)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:173)
 	at org.testng.RemoteTestNGStarter.main(RemoteTestNGStarter.java:111)
-22.08.2013 19:20:50 ERROR ConfigurationService [main] Exception instantiating column processor with name [de.dmc.loggi.processors.impl.StringProcessor]
-java.lang.InstantiationException: de.dmc.loggi.processors.impl.StringProcessor
+22.08.2013 19:20:50 ERROR ConfigurationService [main] Exception instantiating column processor with name [de.loggi.processors.impl.StringProcessor]
+java.lang.InstantiationException: de.loggi.processors.impl.StringProcessor
 	at java.lang.Class.newInstance(Class.java:359)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImpl.initializeColumnProcessor(ConfigurationServiceImpl.java:56)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImpl.initialize(ConfigurationServiceImpl.java:42)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImplNGTest.testInitialize(ConfigurationServiceImplNGTest.java:32)
+	at de.loggi.service.impl.ConfigurationServiceImpl.initializeColumnProcessor(ConfigurationServiceImpl.java:56)
+	at de.loggi.service.impl.ConfigurationServiceImpl.initialize(ConfigurationServiceImpl.java:42)
+	at de.loggi.service.impl.ConfigurationServiceImplNGTest.testInitialize(ConfigurationServiceImplNGTest.java:32)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -60,12 +60,12 @@ java.lang.InstantiationException: de.dmc.loggi.processors.impl.StringProcessor
 	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:202)
 	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:173)
 	at org.testng.RemoteTestNGStarter.main(RemoteTestNGStarter.java:111)
-23.08.2013 19:21:44 ERROR ConfigurationService [main] Exception instantiating column processor with name [de.dmc.loggi.processors.impl.StringProcessor]
-java.lang.InstantiationException: de.dmc.loggi.processors.impl.StringProcessor
+23.08.2013 19:21:44 ERROR ConfigurationService [main] Exception instantiating column processor with name [de.loggi.processors.impl.StringProcessor]
+java.lang.InstantiationException: de.loggi.processors.impl.StringProcessor
 	at java.lang.Class.newInstance(Class.java:359)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImpl.initializeColumnProcessor(ConfigurationServiceImpl.java:56)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImpl.initialize(ConfigurationServiceImpl.java:42)
-	at de.dmc.loggi.service.impl.ConfigurationServiceImplNGTest.testInitialize(ConfigurationServiceImplNGTest.java:32)
+	at de.loggi.service.impl.ConfigurationServiceImpl.initializeColumnProcessor(ConfigurationServiceImpl.java:56)
+	at de.loggi.service.impl.ConfigurationServiceImpl.initialize(ConfigurationServiceImpl.java:42)
+	at de.loggi.service.impl.ConfigurationServiceImplNGTest.testInitialize(ConfigurationServiceImplNGTest.java:32)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

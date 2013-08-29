@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.dmc</groupId>
+    <groupId>de.loggi</groupId>
     <artifactId>loggi</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -135,7 +135,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>de.dmc.loggi.LoggiApp</mainClass>
+                                    <mainClass>de.loggi.LoggiApp</mainClass>
                                 </transformer>
                                 <!--Prevent Shade from overwriting spring.schemas so that app can work in offline using jar's xsds-->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">

@@ -21,7 +21,7 @@
         </layout>
     </appender>
 
-    <logger name="de.dmc.loggi" additivity="false">
+    <logger name="de.loggi" additivity="false">
         <appender-ref ref="FILE_APPENDER"/>
     </logger>
 
