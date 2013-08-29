@@ -8,8 +8,12 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static junit.framework.Assert.assertNotNull;
 
 /**
  * @author CptSpaetzle
@@ -24,12 +28,19 @@ public class FileReadServiceImplTest {
         prepareTestSourceFile("Come get some");
     }
 
+    @Test(enabled = false)
+    public void testDateFormat() throws Exception {
+        String date = "2013-08-29 00:04:40.376 +0200MESZ";
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Zz");
+        Date dateObj = df.parse(date);
+        assertNotNull(dateObj);
+    }
 
-    @Test
-    public void testRegex(){
+    @Test(enabled = false)
+    public void testRegex() {
         Pattern pattern = Pattern.compile("\\((\\d+?)\\)");
         Matcher matcher = pattern.matcher("varchar2(255)");
-        if(matcher.find()){
+        if (matcher.find()) {
             System.out.println(matcher.group(1));
         }
     }

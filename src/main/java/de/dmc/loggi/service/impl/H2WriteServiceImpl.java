@@ -77,12 +77,15 @@ public class H2WriteServiceImpl implements WriteService {
 
     private String getFormattedValue(String columnValue, String dataType, String dataFormat) throws Exception {
         // trim value down to varchar limit
+        // TODO move precision fetch to init state so we should make it only once
         if(dataType.toLowerCase().startsWith("varchar")){
             Matcher matcher = REGEX_PRECISION.matcher(dataType);
             if(matcher.find()){
                 int precision = Integer.valueOf(matcher.group(1));
                 int maxSize = precision > columnValue.length() ? columnValue.length() : precision;
-                return "'" + columnValue.substring(0, maxSize) + "'";
+                String trimmedValue = columnValue.substring(0, maxSize);
+                //using two single quotes to create a quote
+                return "'" + trimmedValue.replace("'","''") + "'";
             }
         }
 

@@ -46,7 +46,6 @@ public class ReadServiceImpl implements ReadService {
         // init phase
         Pattern separator = Pattern.compile("(.*)(" + configuration.getTemplate().getRecordSeparator() + ")(.*)");
 
-
         // read file
         try (BufferedReader reader = Files.newBufferedReader(configuration.getSource(), Charset.defaultCharset())) {
             String currentLine = null;
@@ -55,7 +54,7 @@ public class ReadServiceImpl implements ReadService {
                 if (currentRecord.length() > maxRecordLength) {
                     throw new IOException("maxRecordLength overflow, check if your separator is correct!");
                 }
-
+                // TODO warning! - do not use groups in record separator! - fix
                 Matcher matcher = separator.matcher(currentLine);
                 if (matcher.matches()) {
                     currentRecord.append(matcher.group(1));

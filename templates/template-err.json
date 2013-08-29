@@ -1,0 +1,61 @@
+{
+    "dbMode": "memory",
+    "recordSeparator":"\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3} [\\+\\-]\\d{4}.+?\\]",
+    "columns":[
+        {
+            "name":"datetime",
+            "defaultValue":"undefined",
+            "dataType":"datetime",
+            "dataFormat":"yyyy-MM-dd HH:mm:ss.SSS Zz",
+            "processorName":"de.dmc.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\[(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3} (\\+|\\-)\\d{4}.+?)\\]"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"level",
+            "defaultValue":"undefined",
+            "processorName":"de.dmc.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(ERROR|WARN|INFO)"}
+            ]
+        },
+        {
+            "name":"hostname",
+            "defaultValue":"undefined",
+            "processorName":"de.dmc.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"^\\[.+?\\]\\s.+?\\s(.+?)\\s"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"appserver",
+            "defaultValue":"undefined",
+            "processorName":"de.dmc.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"^\\[.+?\\]\\s.+?\\s.+?\\s.+?\\s(.+?)\\s"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"logger",
+            "defaultValue":"undefined",
+            "processorName":"de.dmc.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\[.*?\\]\\s\\[.*?\\]\\s(.*?)\\s\\[.*?\\]\\s\\[.*?\\]\\s\\[.*?\\]"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"description",
+            "defaultValue":"undefined",
+            "processorName":"de.dmc.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\".*?\"\\s(.*?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        }
+    ]
+}
