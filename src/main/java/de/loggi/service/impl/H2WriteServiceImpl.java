@@ -1,5 +1,6 @@
 package de.loggi.service.impl;
 
+import de.loggi.exceptions.ProcessingException;
 import de.loggi.model.Parameter;
 import de.loggi.processors.ColumnProcessor;
 import de.loggi.service.ConfigurationService;
@@ -40,7 +41,7 @@ public class H2WriteServiceImpl implements WriteService {
     private String port = "8082";
 
     @Override
-    public void processRecord(String record) {
+    public void processRecord(String record) throws ProcessingException {
 
         String[] fields = new String[configuration.getProcessors().size()];
         String[] values = new String[configuration.getProcessors().size()];
@@ -52,8 +53,11 @@ public class H2WriteServiceImpl implements WriteService {
             try {
                 formattedValue = getFormattedValue(rawValue, processor.getColumn().getDataType(), processor.getColumn().getDataFormat());
             } catch (Exception e) {
-                logger.error("Exception formatting field value. Column:" + fields[i] + " raw value:[" + rawValue + "], format:[]" + processor.getColumn().getDataFormat(), e);
+                logger.warn("Problem with record:\n{}", record);
+                throw new ProcessingException("Exception formatting field value. Column:" + fields[i] + " raw value:[" + rawValue + "], format:[" + processor.getColumn().getDataFormat() + "]", e);
+
             }
+
             values[i] = formattedValue == null ? "'null'" : formattedValue;
         }
 
@@ -78,14 +82,14 @@ public class H2WriteServiceImpl implements WriteService {
     private String getFormattedValue(String columnValue, String dataType, String dataFormat) throws Exception {
         // trim value down to varchar limit
         // TODO move precision fetch to init state so we should make it only once
-        if(dataType.toLowerCase().startsWith("varchar")){
+        if (dataType.toLowerCase().startsWith("varchar")) {
             Matcher matcher = REGEX_PRECISION.matcher(dataType);
-            if(matcher.find()){
+            if (matcher.find()) {
                 int precision = Integer.valueOf(matcher.group(1));
                 int maxSize = precision > columnValue.length() ? columnValue.length() : precision;
                 String trimmedValue = columnValue.substring(0, maxSize);
                 //using two single quotes to create a quote
-                return "'" + trimmedValue.replace("'","''") + "'";
+                return "'" + trimmedValue.replace("'", "''") + "'";
             }
         }
 
@@ -108,13 +112,13 @@ public class H2WriteServiceImpl implements WriteService {
         // TODO configure either memory or hdd storage from configuration setting
 
         CommandLine commandLine = configuration.getCommandLine();
-        if(commandLine.hasOption(Parameter.H2_SERVER_PORT.getShortName())){
+        if (commandLine.hasOption(Parameter.H2_SERVER_PORT.getShortName())) {
             port = commandLine.getOptionValue(Parameter.H2_SERVER_PORT.getShortName());
         }
-        if(commandLine.hasOption(Parameter.H2_USERNAME.getShortName())){
+        if (commandLine.hasOption(Parameter.H2_USERNAME.getShortName())) {
             username = commandLine.getOptionValue(Parameter.H2_USERNAME.getShortName());
         }
-        if(commandLine.hasOption(Parameter.H2_PASSWORD.getShortName())){
+        if (commandLine.hasOption(Parameter.H2_PASSWORD.getShortName())) {
             password = commandLine.getOptionValue(Parameter.H2_PASSWORD.getShortName());
         }
 
