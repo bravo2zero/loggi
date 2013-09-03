@@ -46,8 +46,6 @@ public class LoggiApp {
      * All the magic goes here
      */
     private void start() {
-        // TODO implement cli option to test/validate template file
-
         try {
             if (commandLine.hasOption(Parameter.HELP.getShortName())) {
                 help.printHelp(options);
