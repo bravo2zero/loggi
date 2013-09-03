@@ -25,10 +25,6 @@
         <appender-ref ref="FILE_APPENDER"/>
     </logger>
 
-    <logger name="de.loggi.util.Console" additivity="false">
-        <appender-ref ref="CONSOLE_APPENDER"/>
-    </logger>
-
     <root>
         <priority value="DEBUG"/>
         <appender-ref ref="FILE_APPENDER"/>

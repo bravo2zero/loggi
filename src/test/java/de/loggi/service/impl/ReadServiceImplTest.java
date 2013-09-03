@@ -13,12 +13,13 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 /**
  * @author CptSpaetzle
  */
-public class FileReadServiceImplTest {
+public class ReadServiceImplTest {
 
     Path testSourcePath = FileSystems.getDefault().getPath("test-source.log");
 
@@ -43,6 +44,13 @@ public class FileReadServiceImplTest {
         if (matcher.find()) {
             assertNotNull(matcher.group(1));
         }
+    }
+
+    @Test
+    public void testProgressBarString(){
+        ReadServiceImpl service = new ReadServiceImpl();
+        assertEquals("\r[===>                ]",service.progressBarString(20,100));
+        assertEquals("\r[=========>          ]",service.progressBarString(50,100));
     }
 
     private void prepareTestSourceFile(String content) throws IOException {

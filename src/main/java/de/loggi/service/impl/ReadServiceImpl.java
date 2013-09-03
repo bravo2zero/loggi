@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 public class ReadServiceImpl implements ReadService {
 
+    private static final long SLEEPTIME = 1000;
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ConfigurationService configuration;
@@ -30,23 +31,29 @@ public class ReadServiceImpl implements ReadService {
     private int numberOfThreads = 0;
     private int maxRecordLength = 10000;
 
-    // TODO put some progress indication in logs
+    // TODO add support for wildcards in source
 
     @Override
     public void process() {
         initialize();
-        if (numberOfThreads == 0) {
-            // (numberOfProcessors - 1) by default
-            int numberOfCPUs = Runtime.getRuntime().availableProcessors();
-            numberOfThreads = numberOfCPUs > 1 ? numberOfCPUs - 1 : numberOfCPUs;
+
+        // count total number of lines in source file
+        long sourceNumberOfLines = 0;
+        try (BufferedReader reader = Files.newBufferedReader(configuration.getSource(), Charset.defaultCharset())) {
+            String currentLine = null;
+            while ((currentLine = reader.readLine()) != null) {
+                sourceNumberOfLines++;
+            }
+            System.out.println("Source lines: "+ sourceNumberOfLines);
+        } catch (IOException e) {
+            logger.error("Error calculating number of lines in source file");
         }
-        logger.debug("Processing with {} threads", numberOfThreads);
-        executor = new ThreadPoolExecutor(numberOfThreads, numberOfThreads, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new NamingThreadFactory("ColumnProcessor"));
 
         // init phase
         Pattern separator = Pattern.compile("(.*)(" + configuration.getTemplate().getRecordSeparator() + ")(.*)");
 
         // read file
+        long numberOfRecords = 0;
         try (BufferedReader reader = Files.newBufferedReader(configuration.getSource(), Charset.defaultCharset())) {
             String currentLine = null;
             StringBuilder currentRecord = new StringBuilder();
@@ -60,6 +67,7 @@ public class ReadServiceImpl implements ReadService {
                     currentRecord.append(matcher.group(1));
                     if (currentRecord.length() > 0) {
                         executor.submit(new RecordTask(currentRecord.toString()));
+                        numberOfRecords++;
                         currentRecord = new StringBuilder();
                     }
                     currentRecord.append(matcher.group(2) + matcher.group(3));
@@ -68,28 +76,64 @@ public class ReadServiceImpl implements ReadService {
                 }
             }
             executor.submit(new RecordTask(currentRecord.toString()));
+            numberOfRecords++;
         } catch (IOException ex) {
-
             logger.error("Error reading source [" + configuration.getSource().toString() + "]", ex);
         }
+        System.out.println("Done reading, " + numberOfRecords + " records submitted.");
 
-        //wait for the executor to finish
+        //wait for the executor to finish, print out progress bar
         executor.shutdown();
-        try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            logger.error("Interrupted ThreadPoolExecutor termination", e);
+        while (executor.getQueue().size() > 0) {
+            try {
+                String progressBar = progressBarString(executor.getCompletedTaskCount(), executor.getTaskCount());
+                System.out.print(progressBar + " " + executor.getCompletedTaskCount() + "/" + executor.getTaskCount());
+                Thread.sleep(SLEEPTIME);
+            } catch (InterruptedException e) {
+                logger.error("Interrupted ThreadPoolExecutor termination", e);
+            }
         }
+        String progressBar = progressBarString(executor.getCompletedTaskCount(), executor.getTaskCount());
+        System.out.println(progressBar + " " + executor.getCompletedTaskCount() + "/" + executor.getTaskCount());
+    }
+
+    String progressBarString(long done, long total) {
+        int scale = 20;
+        StringBuilder builder = new StringBuilder("\r");
+        int progress = Math.round(((float) done / (float) total) * scale);
+        builder.append("[").append(repeat("=", progress - 1));
+        builder.append(">").append(repeat(" ", scale - progress));
+        builder.append("]");
+        return builder.toString();
     }
 
     private void initialize() {
+        // get params
         CommandLine commandLine = configuration.getCommandLine();
-        if(commandLine.hasOption(Parameter.MAX_RECORD_LENGTH.getShortName())){
+        if (commandLine.hasOption(Parameter.MAX_RECORD_LENGTH.getShortName())) {
             setMaxRecordLength(Integer.valueOf(commandLine.getOptionValue(Parameter.MAX_RECORD_LENGTH.getShortName())));
         }
-        if(commandLine.hasOption(Parameter.PROCESSOR_THREADS.getShortName())){
+        if (commandLine.hasOption(Parameter.PROCESSOR_THREADS.getShortName())) {
             setNumberOfThreads(Integer.valueOf(commandLine.getOptionValue(Parameter.PROCESSOR_THREADS.getShortName())));
         }
+
+        // define number of processing threads
+        if (numberOfThreads == 0) {
+            // (numberOfProcessors - 1) by default
+            int numberOfCPUs = Runtime.getRuntime().availableProcessors();
+            numberOfThreads = numberOfCPUs > 1 ? numberOfCPUs - 1 : numberOfCPUs;
+        }
+        //init executors pool
+        executor = new ThreadPoolExecutor(numberOfThreads, numberOfThreads, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new NamingThreadFactory("ColumnProcessor"));
+        logger.debug("Processing with {} threads", numberOfThreads);
+    }
+
+    private String repeat(String val, int count) {
+        StringBuilder repeat = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            repeat.append(val);
+        }
+        return repeat.toString();
     }
 
     public void setConfiguration(ConfigurationService configuration) {
