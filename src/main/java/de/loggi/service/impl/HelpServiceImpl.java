@@ -54,8 +54,9 @@ public class HelpServiceImpl implements HelpService {
             }
         }
 
-        // TODO printHeader("Supported Data Types:");
 
+        System.out.println("Supported data types for the moment are: varchar(precision), int, datatime");
+        System.out.println("Please checkout H2 Data types Help for details: http://www.h2database.com/html/datatypes.html");
     }
 
     private void printHeader(String headerText){

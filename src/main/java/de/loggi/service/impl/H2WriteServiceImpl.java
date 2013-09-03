@@ -109,8 +109,6 @@ public class H2WriteServiceImpl implements WriteService {
 
     @Override
     public void initialize() throws Exception {
-        // TODO configure either memory or hdd storage from configuration setting
-
         CommandLine commandLine = configuration.getCommandLine();
         if (commandLine.hasOption(Parameter.H2_SERVER_PORT.getShortName())) {
             port = commandLine.getOptionValue(Parameter.H2_SERVER_PORT.getShortName());
