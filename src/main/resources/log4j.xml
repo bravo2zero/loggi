@@ -17,12 +17,16 @@
     <appender name="CONSOLE_APPENDER" class="org.apache.log4j.ConsoleAppender">
         <param name="Threshold" value="DEBUG"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} %-4p %c{1} [%t] %m%n"/>
+            <param name="ConversionPattern" value="%m%n"/>
         </layout>
     </appender>
 
     <logger name="de.loggi" additivity="false">
         <appender-ref ref="FILE_APPENDER"/>
+    </logger>
+
+    <logger name="de.loggi.util.Console" additivity="false">
+        <appender-ref ref="CONSOLE_APPENDER"/>
     </logger>
 
     <root>

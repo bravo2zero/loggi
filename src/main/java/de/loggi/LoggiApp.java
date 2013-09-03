@@ -3,7 +3,7 @@ package de.loggi;
 import de.loggi.model.Parameter;
 import de.loggi.service.ConfigurationService;
 import de.loggi.service.HelpService;
-import de.loggi.service.WriteService;
+import de.loggi.service.impl.H2WriteServiceImpl;
 import de.loggi.service.impl.ReadServiceImpl;
 import org.apache.commons.cli.*;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -61,7 +61,8 @@ public class LoggiApp {
 
             String templateFileName = commandLine.hasOption(Parameter.TEMPLATE.getShortName()) ? commandLine.getOptionValue(Parameter.TEMPLATE.getShortName()) : "template.json";
 
-            WriteService writeService = (WriteService) context.getBean("writeService");
+            HelpService helpService = (HelpService) context.getBean("helpService");
+            H2WriteServiceImpl writeService = (H2WriteServiceImpl) context.getBean("writeService");
             ConfigurationService configurationService = (ConfigurationService) context.getBean("configurationService");
             configurationService.setCommandLine(commandLine);
             configurationService.initialize(templateFileName);
@@ -73,6 +74,7 @@ public class LoggiApp {
             ReadServiceImpl readService = (ReadServiceImpl) context.getBean("readService");
             readService.process();
 
+            helpService.printH2PromptHint(writeService.getPort());
             pauseUntilKeypressed();
             writeService.finalizeAndShutdown();
 
@@ -84,7 +86,6 @@ public class LoggiApp {
 
     private void pauseUntilKeypressed() {
         try {
-            System.out.println("Go to http://localhost:8082 or press Enter to quit..."); // TODO remove this crappy hardcode later
             System.in.read();
         } catch (IOException e) {
             // oops, nothing here
@@ -115,8 +116,8 @@ public class LoggiApp {
                 builder.withArgName(param.getLongName() + "Arg");
             }
             Option option = builder.create(param.getShortName());
-            if(!param.getLongName().isEmpty()){
-            option.setLongOpt(param.getLongName());
+            if (!param.getLongName().isEmpty()) {
+                option.setLongOpt(param.getLongName());
             }
             options.addOption(option);
         }

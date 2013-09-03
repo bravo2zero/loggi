@@ -3,12 +3,15 @@ package de.loggi.service.impl;
 import de.loggi.processors.AbstractColumnProcessor;
 import de.loggi.processors.MetaInfo;
 import de.loggi.service.HelpService;
+import de.loggi.util.Console;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.util.Set;
 
 /**
@@ -19,6 +22,8 @@ public class HelpServiceImpl implements HelpService {
     public static final String PROCESSORS_PACKAGE = "de.loggi.processors.impl";
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    Console console = new Console();
 
     private String author;
     private String projectVersion;
@@ -40,13 +45,13 @@ public class HelpServiceImpl implements HelpService {
                 "Author: %4$s" + NEWLINE +
                 "%5$s" +  NEWLINE,
                 projectName, projectVersion, description, author, projectUrl);
-        System.out.println(header);
+        console.info(header);
         printUsage(options);
 
         printHeader("Available Column Processors:");
         for (Class annotatedProcessor : getPackageClasses(PROCESSORS_PACKAGE)) {
             try {
-                System.out.println(AbstractColumnProcessor.getProcessorInfo(annotatedProcessor));
+                console.info(AbstractColumnProcessor.getProcessorInfo(annotatedProcessor));
             } catch (Exception e) {
                 logger.error("Exception compiling column processor usage info", e);
             }
@@ -57,7 +62,23 @@ public class HelpServiceImpl implements HelpService {
     }
 
     private void printHeader(String headerText){
-        System.out.println(NEWLINE + headerText + NEWLINE);
+        console.info(NEWLINE + headerText + NEWLINE);
+    }
+
+    @Override
+    public void printH2PromptHint(String port){
+        StringBuilder builder = new StringBuilder();
+        try {
+            builder
+                    .append("Open http://")
+                    .append(Inet4Address.getLocalHost().getHostAddress())
+                    .append(":")
+                    .append(port)
+                    .append(" or press <Ctrl+C> to exit...");
+            console.info(builder.toString());
+        } catch (UnknownHostException e) {
+            logger.error("Exception printing H2 command prompt hint",e);
+        }
     }
 
     private Set<Class<?>> getPackageClasses(String packageName) {

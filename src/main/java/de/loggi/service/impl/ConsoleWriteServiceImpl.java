@@ -4,6 +4,7 @@ import de.loggi.processors.AbstractColumnProcessor;
 import de.loggi.processors.ColumnProcessor;
 import de.loggi.service.ConfigurationService;
 import de.loggi.service.WriteService;
+import de.loggi.util.Console;
 
 /**
  * @author CptSpaetzle
@@ -12,6 +13,7 @@ public class ConsoleWriteServiceImpl implements WriteService {
 
 
     private ConfigurationService configuration;
+    Console console = new Console();
 
     @Override
     public void processRecord(String record) {
@@ -19,7 +21,7 @@ public class ConsoleWriteServiceImpl implements WriteService {
         for (ColumnProcessor processor : configuration.getProcessors()) {
             builder.append(processor.getColumnValue(record)).append("\t");
         }
-        System.out.println(builder.toString());
+        console.info(builder.toString());
     }
 
     @Override
@@ -31,7 +33,7 @@ public class ConsoleWriteServiceImpl implements WriteService {
             }
             builder.append(processor.getColumn().getName());
         }
-        System.out.println(builder.toString());
+        console.info(builder.toString());
     }
 
     @Override

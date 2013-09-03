@@ -12,8 +12,8 @@ public enum Parameter {
     MAX_RECORD_LENGTH("maxRecordLength","", "Maximum length for single record before separator alert goes off", true, false),
     PROCESSOR_THREADS("threads", "", "Number of threads for column processors, default is (numberOfCPUs-1)", true, false),
     H2_SERVER_PORT("port", "", "H2 Console port", true, false),
-    H2_USERNAME("user", "", "username for H2 Console", true, false),
-    H2_PASSWORD("password", "", "password for H2 Console", true, false);
+    H2_USERNAME("user", "", "username for H2 Console (default: 'user')", true, false),
+    H2_PASSWORD("password", "", "password for H2 Console (default: 'password')", true, false);
 
     String shortName;
     String longName;

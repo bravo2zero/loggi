@@ -158,4 +158,7 @@ public class H2WriteServiceImpl implements WriteService {
         this.configuration = configuration;
     }
 
+    public String getPort() {
+        return port;
+    }
 }

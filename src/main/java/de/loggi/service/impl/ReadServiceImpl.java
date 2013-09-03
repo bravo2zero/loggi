@@ -54,7 +54,7 @@ public class ReadServiceImpl implements ReadService {
                 if (currentRecord.length() > maxRecordLength) {
                     throw new IOException("maxRecordLength overflow, check if your separator is correct!");
                 }
-                // TODO warning! - do not use groups in record separator! - fix
+                // TODO warning! - do not use groups in record separator! - fix me
                 Matcher matcher = separator.matcher(currentLine);
                 if (matcher.matches()) {
                     currentRecord.append(matcher.group(1));
