@@ -1,0 +1,52 @@
+{
+    "dbMode": "memory",
+    "recordSeparator":"^",
+    "columns":[
+        {
+            "name":"datetime",
+            "defaultValue":"undefined",
+            "dataType":"datetime",
+            "dataFormat":"dd/MMM/yyyy:HH:mm:ss Z",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\[(\\d{2}/\\w{3}/\\d{4}:\\d{2}:\\d{2}:\\d{2} [+-]\\d{4})\\]"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"ip",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}"}
+            ]
+        },
+        {
+            "name":"request",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\\"(.*)\\\""},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"response_status",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(\\d{3}) (\\d+)$"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"response_size",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(\\d{3}) (\\d+)$"},
+                {"name":"group", "value":"2"}
+            ]
+        }
+    ]
+};
