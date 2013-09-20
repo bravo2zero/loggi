@@ -27,7 +27,7 @@ public class H2WriteServiceImpl implements WriteService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String TABLE_NAME = "records";
-    public static final String H2_DATETIME = "yyyy-MM-dd hh:mm:ss";
+    public static final String H2_DATETIME = "yyyy-MM-dd HH:mm:ss";
     public static final String H2_SERVER_URI = "jdbc:h2:mem:loggi";
 
     public static final Pattern REGEX_PRECISION = Pattern.compile("\\((\\d+?)\\)");
@@ -53,8 +53,7 @@ public class H2WriteServiceImpl implements WriteService {
             try {
                 formattedValue = getFormattedValue(rawValue, processor.getColumn().getDataType(), processor.getColumn().getDataFormat());
             } catch (Exception e) {
-                logger.warn("Problem with record:\n{}", record);
-                throw new ProcessingException("Exception formatting field value. Column:" + fields[i] + " raw value:[" + rawValue + "], format:[" + processor.getColumn().getDataFormat() + "]", e);
+                throw new ProcessingException("Exception formatting field value. Column:" + fields[i] + " raw value:[" + rawValue + "], format:[" + processor.getColumn().getDataFormat() + "]. Record:["+record+"]", e);
 
             }
 
