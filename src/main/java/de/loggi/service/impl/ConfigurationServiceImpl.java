@@ -10,9 +10,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class ConfigurationServiceImpl implements ConfigurationService {
@@ -21,7 +23,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private ObjectMapper mapper = new ObjectMapper();
     private Template template;
     private List<ColumnProcessor> processors;
-    private Path sourceFile;
+    private List<Path> sourceFiles;
     private CommandLine commandLine;
 
 
@@ -56,7 +58,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             processors.add(processor);
 
         } catch (Exception e) {
-            logger.error("Exception instantiating column, name:" + column.getName() + " processor:" + column.getProcessorName()+". Skipped.", e);
+            logger.error("Exception instantiating column, name:" + column.getName() + " processor:" + column.getProcessorName() + ". Skipped.", e);
         }
     }
 
@@ -81,8 +83,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     }
 
     @Override
-    public Path getSource() {
-        return sourceFile;
+    public List<Path> getSources() {
+        if (sourceFiles == null) {
+            sourceFiles = new ArrayList<>();
+        }
+        return sourceFiles;
     }
 
     @Override
@@ -90,9 +95,40 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         if (source == null || source.isEmpty()) {
             throw new ConfigurationException("Source file path is null or empty");
         }
-        sourceFile = FileSystems.getDefault().getPath(source);
-        if (!sourceFile.toFile().exists()) {
-            throw new ConfigurationException("Source file not found: " + source);
+
+        // fix unexpanded glob wildcard chars
+        source = source.replace("\\*","*").replace("\\?","?");
+
+        final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/" + source);
+        Path userDir = FileSystems.getDefault().getPath(System.getProperty("user.dir"));
+        try {
+            Files.walkFileTree(userDir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, new FileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if(matcher.matches(file)){
+                        getSources().add(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    logger.warn("Cannot access file: " + file + ". Skipped.", exc);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new ConfigurationException("Source files lookup exception", e);
         }
     }
 

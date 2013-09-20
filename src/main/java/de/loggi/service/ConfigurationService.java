@@ -35,5 +35,5 @@ public interface ConfigurationService {
 
     void setSource(String sourceFile) throws ConfigurationException;
 
-    Path getSource();
+    List<Path> getSources();
 }
