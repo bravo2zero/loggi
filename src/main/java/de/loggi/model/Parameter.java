@@ -9,7 +9,7 @@ public enum Parameter {
     TEMPLATE("t", "template", "path to template.json file", true, false),
     SOURCE("s", "source", "Source log file(s). Glob wildcard syntax is also supported, but make sure to escape ? and * with backslash (\\*, \\?)", true, false),
     HELP("h", "help", "Display help and usage info", false, false),
-    MAX_RECORD_LENGTH("maxRecordLength","", "Maximum length for single record before separator alert goes off", true, false),
+    MAX_RECORD_LENGTH("maxRecordLength","", "Maximum length for single record before separator alert goes off (default 50k chars)", true, false),
     PROCESSOR_THREADS("threads", "", "Number of threads for column processors, default is (numberOfCPUs-1)", true, false),
     H2_SERVER_PORT("port", "", "H2 Console port", true, false),
     H2_USERNAME("user", "", "username for H2 Console (default: 'user')", true, false),

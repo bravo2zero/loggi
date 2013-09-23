@@ -32,7 +32,7 @@ public class ReadServiceImpl implements ReadService {
     private WriteService writeService;
     private ThreadPoolExecutor executor;
     private int numberOfThreads = 0;
-    private int maxRecordLength = 10000;
+    private int maxRecordLength = 50000;
 
     @Override
     public void process() {
