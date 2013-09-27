@@ -103,11 +103,12 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         case1 - simple - some-file.ext
         */
 
-        source = source.replace("'","");
+        source = source.replace("'","").replace(";","");
+        logger.debug("source:{}",source);
         final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/" + source);
         Path userDir = FileSystems.getDefault().getPath(System.getProperty("user.dir"));
         Path searchPath = FileUtils.getAbsolutePathFromPath(source, userDir);
-        logger.isDebugEnabled();
+        logger.debug("path:{}", searchPath);
         try {
             Files.walkFileTree(searchPath, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, new FileVisitor<Path>() {
                 @Override
