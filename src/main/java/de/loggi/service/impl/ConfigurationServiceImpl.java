@@ -5,6 +5,7 @@ import de.loggi.model.Column;
 import de.loggi.model.Template;
 import de.loggi.processors.ColumnProcessor;
 import de.loggi.service.ConfigurationService;
+import de.loggi.util.FileUtils;
 import org.apache.commons.cli.CommandLine;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -96,13 +97,19 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             throw new ConfigurationException("Source file path is null or empty");
         }
 
-        // fix unexpanded glob wildcard chars
-        source = source.replace("\\*","*").replace("\\?","?");
+        // remove wrapping quotes preventing java from expanding arguments
 
+        /*
+        case1 - simple - some-file.ext
+        */
+
+        source = source.replace("'","");
         final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/" + source);
         Path userDir = FileSystems.getDefault().getPath(System.getProperty("user.dir"));
+        Path searchPath = FileUtils.getAbsolutePathFromPath(source, userDir);
+        logger.isDebugEnabled();
         try {
-            Files.walkFileTree(userDir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, new FileVisitor<Path>() {
+            Files.walkFileTree(searchPath, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                     return FileVisitResult.CONTINUE;

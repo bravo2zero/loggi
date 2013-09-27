@@ -7,7 +7,7 @@ package de.loggi.model;
  */
 public enum Parameter {
     TEMPLATE("t", "template", "path to template.json file", true, false),
-    SOURCE("s", "source", "Source log file(s). Glob wildcard syntax is also supported, but make sure to escape ? and * with backslash (\\*, \\?)", true, false),
+    SOURCE("s", "source", "Source log file(s). Glob wildcard syntax is also supported, but make sure you wrap the whole glob in single quotes like '*.log'. Otherwise java will expand wildcards arguments before passing them to application", true, false),
     HELP("h", "help", "Display help and usage info", false, false),
     MAX_RECORD_LENGTH("maxRecordLength","", "Maximum length for single record before separator alert goes off (default 50k chars)", true, false),
     PROCESSOR_THREADS("threads", "", "Number of threads for column processors, default is (numberOfCPUs-1)", true, false),

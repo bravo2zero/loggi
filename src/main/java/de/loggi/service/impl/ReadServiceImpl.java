@@ -99,7 +99,7 @@ public class ReadServiceImpl implements ReadService {
         } catch (IOException ex) {
             logger.error("Error reading source [" + configuration.getSources().toString() + "]", ex);
         }
-        System.out.println("Done reading, " + numberOfRecords + " records submitted.");
+        System.out.println( file.toAbsolutePath() + ": done reading, " + numberOfRecords + " records submitted.");
     }
 
     private void initialize() {
