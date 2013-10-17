@@ -9,11 +9,12 @@ public enum Parameter {
     TEMPLATE("t", "template", "path to template.json file", true, false),
     SOURCE("s", "source", "Source log file(s). Glob wildcard syntax is also supported, but make sure you wrap the whole glob in quotes and put semicolon at the end, like \"a/b/*.log;\", otherwise java will expand wildcards arguments before passing them to application", true, false),
     HELP("h", "help", "Display help and usage info", false, false),
-    MAX_RECORD_LENGTH("maxRecordLength","", "Maximum length for single record before separator alert goes off (default 50k chars)", true, false),
+    MAX_RECORD_LENGTH("maxRecordLength", "", "Maximum length for single record before separator alert goes off (default 50k chars)", true, false),
     PROCESSOR_THREADS("threads", "", "Number of threads for column processors, default is (numberOfCPUs-1)", true, false),
     H2_SERVER_PORT("port", "", "H2 Console port", true, false),
     H2_USERNAME("user", "", "username for H2 Console (default: 'user')", true, false),
-    H2_PASSWORD("password", "", "password for H2 Console (default: 'password')", true, false);
+    H2_PASSWORD("password", "", "password for H2 Console (default: 'password')", true, false),
+    DEBUG("debug", "", "turns on debug information output", false, false);
 
     String shortName;
     String longName;

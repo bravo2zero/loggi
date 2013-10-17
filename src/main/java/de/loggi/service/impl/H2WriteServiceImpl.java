@@ -29,6 +29,7 @@ public class H2WriteServiceImpl implements WriteService {
     public static final String TABLE_NAME = "records";
     public static final String H2_DATETIME = "yyyy-MM-dd HH:mm:ss";
     public static final String H2_SERVER_URI = "jdbc:h2:mem:loggi";
+    public static final String DEBUG_TRACE_OPTION=";TRACE_LEVEL_SYSTEM_OUT=3";
 
     public static final Pattern REGEX_PRECISION = Pattern.compile("\\((\\d+?)\\)");
 
@@ -120,7 +121,11 @@ public class H2WriteServiceImpl implements WriteService {
         }
 
         Class.forName("org.h2.Driver").newInstance();
-        cp = JdbcConnectionPool.create(H2_SERVER_URI, username, password);
+        String serverUri = H2_SERVER_URI;
+        if(configuration.getCommandLine().hasOption(Parameter.DEBUG.getShortName())){
+            serverUri = serverUri + DEBUG_TRACE_OPTION;
+        }
+        cp = JdbcConnectionPool.create(serverUri, username, password);
         // create & start embedded H2 Server
         server = Server.createWebServer("-web", "-webAllowOthers", "-webPort", port).start();
         Connection conn = cp.getConnection();
