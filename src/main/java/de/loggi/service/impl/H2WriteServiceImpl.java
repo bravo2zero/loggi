@@ -72,7 +72,6 @@ public class H2WriteServiceImpl implements WriteService {
                     .append(")");
             logger.debug("H2> {}", sqlStatement.toString());
             conn.prepareStatement(sqlStatement.toString()).executeUpdate();
-            conn.commit();
             conn.close();
         } catch (SQLException e) {
             logger.error("Exception processing record", e);
@@ -145,10 +144,8 @@ public class H2WriteServiceImpl implements WriteService {
         sqlCreateTable.append(")");
         logger.debug("H2> {}", sqlCreateTable.toString());
         conn.prepareStatement(sqlCreateTable.toString()).executeUpdate();
-        conn.commit();
         conn.close();
     }
-
 
     @Override
     public void finalizeAndShutdown() {
