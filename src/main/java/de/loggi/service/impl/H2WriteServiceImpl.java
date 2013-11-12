@@ -28,7 +28,7 @@ public class H2WriteServiceImpl implements WriteService {
 
     public static final String TABLE_NAME = "records";
     public static final String H2_DATETIME = "yyyy-MM-dd HH:mm:ss";
-    public static final String H2_SERVER_URI = "jdbc:h2:mem:loggi";
+    public static final String H2_SERVER_URI = "jdbc:h2:mem:loggi;DB_CLOSE_DELAY=-1";
     public static final String DEBUG_TRACE_OPTION=";TRACE_LEVEL_SYSTEM_OUT=3";
 
     public static final Pattern REGEX_PRECISION = Pattern.compile("\\((\\d+?)\\)");
