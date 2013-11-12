@@ -3,7 +3,7 @@
     "recordSeparator":"^",
     "columns":[
         {
-            "name":"datetime",
+            "name":"starttime",
             "defaultValue":"undefined",
             "dataType":"datetime",
             "processorName":"de.loggi.processors.impl.SplitProcessor",
@@ -243,6 +243,14 @@
             "processorName":"de.loggi.processors.impl.SplitProcessor",
             "attributes":[
                 {"name":"column", "value":"28"}
+            ]
+        },
+        {
+            "name":"responseHttpStatus",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"29"}
             ]
         }
     ]
