@@ -1,4 +1,4 @@
-package de.loggi.service.impl;
+package de.loggi.service.writers;
 
 import de.loggi.processors.AbstractColumnProcessor;
 import de.loggi.processors.ColumnProcessor;

@@ -4,7 +4,7 @@ import de.loggi.exceptions.ConfigurationException;
 import de.loggi.model.Column;
 import de.loggi.processors.AbstractColumnProcessor;
 import de.loggi.processors.MetaInfo;
-import de.loggi.service.impl.H2WriteServiceImpl;
+import de.loggi.service.writers.H2WriteServiceImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

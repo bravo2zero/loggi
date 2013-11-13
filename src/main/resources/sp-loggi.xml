@@ -25,7 +25,7 @@
 
     <bean name="configurationService" class="de.loggi.service.impl.ConfigurationServiceImpl"/>
 
-    <bean name="writeService" class="de.loggi.service.impl.H2WriteServiceImpl">
+    <bean name="writeService" class="de.loggi.service.writers.H2WriteServiceImpl">
         <property name="configuration" ref="configurationService"/>
     </bean>
 

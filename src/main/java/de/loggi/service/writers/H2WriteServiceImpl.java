@@ -1,4 +1,4 @@
-package de.loggi.service.impl;
+package de.loggi.service.writers;
 
 import de.loggi.exceptions.ProcessingException;
 import de.loggi.model.Parameter;

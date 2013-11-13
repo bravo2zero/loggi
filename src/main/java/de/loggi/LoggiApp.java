@@ -3,7 +3,7 @@ package de.loggi;
 import de.loggi.model.Parameter;
 import de.loggi.service.ConfigurationService;
 import de.loggi.service.HelpService;
-import de.loggi.service.impl.H2WriteServiceImpl;
+import de.loggi.service.writers.H2WriteServiceImpl;
 import de.loggi.service.impl.ReadServiceImpl;
 import org.apache.commons.cli.*;
 import org.apache.log4j.xml.DOMConfigurator;
