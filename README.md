@@ -37,6 +37,7 @@ Loggi is a command line tool to analyse practically any log file. The idea is to
   ```
 * Once you see a prompt, you can access results through browser (default *http://localhost:8082*):
 <pre>
+JDBC URL: jdbc:h2:mem:loggi
 User: user
 Password: password
 </pre>
