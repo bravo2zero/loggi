@@ -3,6 +3,7 @@ package de.loggi;
 import de.loggi.model.Parameter;
 import de.loggi.service.ConfigurationService;
 import de.loggi.service.HelpService;
+import de.loggi.service.WriteService;
 import de.loggi.service.writers.H2WriteServiceImpl;
 import de.loggi.service.impl.ReadServiceImpl;
 import org.apache.commons.cli.*;
@@ -60,21 +61,23 @@ public class LoggiApp {
             String templateFileName = commandLine.hasOption(Parameter.TEMPLATE.getShortName()) ? commandLine.getOptionValue(Parameter.TEMPLATE.getShortName()) : "template.json";
 
             HelpService helpService = (HelpService) context.getBean("helpService");
-            H2WriteServiceImpl writeService = (H2WriteServiceImpl) context.getBean("writeService");
+
             ConfigurationService configurationService = (ConfigurationService) context.getBean("configurationService");
             configurationService.setCommandLine(commandLine);
             configurationService.initialize(templateFileName);
             configurationService.setSource(commandLine.getOptionValue(Parameter.SOURCE.getShortName()));
-            writeService.initialize();
-
             logger.debug("Using configuration template: \n {}", configurationService.currentConfigToString());
 
+            WriteService writer =  configurationService.getWriter();
+
+
             ReadServiceImpl readService = (ReadServiceImpl) context.getBean("readService");
+            readService.setWriteService(writer);
             readService.process();
 
-            helpService.printH2PromptHint(writeService.getPort());
+            System.out.println(writer.getSuccessHint());
             pauseUntilKeypressed();
-            writeService.finalizeAndShutdown();
+            writer.finalizeAndShutdown();
 
         } catch (Exception ex) {
             logger.error("Exception initializing Configuration Service", ex);

@@ -25,13 +25,8 @@
 
     <bean name="configurationService" class="de.loggi.service.impl.ConfigurationServiceImpl"/>
 
-    <bean name="writeService" class="de.loggi.service.writers.H2WriteServiceImpl">
-        <property name="configuration" ref="configurationService"/>
-    </bean>
-
     <bean name="readService" class="de.loggi.service.impl.ReadServiceImpl">
         <property name="configuration" ref="configurationService"/>
-        <property name="writeService" ref="writeService"/>
     </bean>
 
 

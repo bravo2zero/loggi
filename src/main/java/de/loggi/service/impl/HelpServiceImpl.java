@@ -3,6 +3,7 @@ package de.loggi.service.impl;
 import de.loggi.processors.AbstractColumnProcessor;
 import de.loggi.processors.MetaInfo;
 import de.loggi.service.HelpService;
+import de.loggi.service.writers.AbstractWriteServiceImpl;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.reflections.Reflections;
@@ -19,6 +20,7 @@ import java.util.Set;
 public class HelpServiceImpl implements HelpService {
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final String PROCESSORS_PACKAGE = "de.loggi.processors.impl";
+    public static final String WRITERS_PACKAGE = "de.loggi.service.writers";
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -54,6 +56,14 @@ public class HelpServiceImpl implements HelpService {
             }
         }
 
+        printHeader("Available Writers:");
+        for (Class annotatedProcessor : getPackageClasses(WRITERS_PACKAGE)) {
+            try {
+                System.out.println(AbstractWriteServiceImpl.getProcessorInfo(annotatedProcessor));
+            } catch (Exception e) {
+                logger.error("Exception compiling writer usage info", e);
+            }
+        }
 
         System.out.println("Supported data types for the moment are: varchar(precision), int, datatime");
         System.out.println("Please checkout H2 Data types Help for details: http://www.h2database.com/html/datatypes.html");
@@ -61,22 +71,6 @@ public class HelpServiceImpl implements HelpService {
 
     private void printHeader(String headerText){
         System.out.println(NEWLINE + headerText + NEWLINE);
-    }
-
-    @Override
-    public void printH2PromptHint(String port){
-        StringBuilder builder = new StringBuilder();
-        try {
-            builder
-                    .append("Open http://")
-                    .append(Inet4Address.getLocalHost().getHostAddress())
-                    .append(":")
-                    .append(port)
-                    .append(" or press <Ctrl+C> to exit...");
-            System.out.println(builder.toString());
-        } catch (UnknownHostException e) {
-            logger.error("Exception printing H2 command prompt hint",e);
-        }
     }
 
     private Set<Class<?>> getPackageClasses(String packageName) {

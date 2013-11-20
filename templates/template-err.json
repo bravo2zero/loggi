@@ -1,5 +1,10 @@
 {
-    "dbMode": "memory",
+    "writer": {
+            "writerClass":"de.loggi.service.writers.H2WriteServiceImpl",
+            "attributes":[
+                {"name":"mode","value":"memory"}
+            ]
+        },
     "recordSeparator":"\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3} [\\+\\-]\\d{4}.+?\\]",
     "columns":[
         {

@@ -1,17 +1,18 @@
 package de.loggi.service.writers;
 
+import de.loggi.exceptions.ConfigurationException;
 import de.loggi.exceptions.ProcessingException;
-import de.loggi.model.Parameter;
+import de.loggi.processors.AttributeDef;
 import de.loggi.processors.ColumnProcessor;
-import de.loggi.service.ConfigurationService;
-import de.loggi.service.WriteService;
-import org.apache.commons.cli.CommandLine;
+import de.loggi.processors.MetaInfo;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.tools.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -22,24 +23,35 @@ import java.util.regex.Pattern;
 /**
  * @author CptSpaetzle
  */
-public class H2WriteServiceImpl implements WriteService {
+@MetaInfo(
+        description = "H2 Database writer. Brings up embedded H2 server and writes output to 'record' table.",
+        attributes = {
+                @AttributeDef(name = H2WriteServiceImpl.ATTR_MODE, description = "H2 embedded mode (memory, disk)", defaultValue = "memory"),
+                @AttributeDef(name = H2WriteServiceImpl.ATTR_PORT, description = "Port to be used by H2 Server", defaultValue = "8082"),
+                @AttributeDef(name = H2WriteServiceImpl.ATTR_USERNAME, description = "Login username", defaultValue = "user"),
+                @AttributeDef(name = H2WriteServiceImpl.ATTR_PASSWORD, description = "Login password", defaultValue = "password"),
+                @AttributeDef(name = H2WriteServiceImpl.ATTR_DEBUG, description = "Print out SQL Statements for debug purposes (false|true)", defaultValue = "false")
+        }
+)
+public class H2WriteServiceImpl extends AbstractWriteServiceImpl {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public static final String ATTR_MODE = "mode";
+    public static final String ATTR_PORT = "port";
+    public static final String ATTR_USERNAME = "user";
+    public static final String ATTR_PASSWORD = "password";
+    public static final String ATTR_DEBUG = "debug";
 
     public static final String TABLE_NAME = "records";
     public static final String H2_DATETIME = "yyyy-MM-dd HH:mm:ss";
     public static final String H2_SERVER_URI = "jdbc:h2:mem:loggi;DB_CLOSE_DELAY=-1";
-    public static final String DEBUG_TRACE_OPTION=";TRACE_LEVEL_SYSTEM_OUT=3";
+    public static final String DEBUG_TRACE_OPTION = ";TRACE_LEVEL_SYSTEM_OUT=3";
 
     public static final Pattern REGEX_PRECISION = Pattern.compile("\\((\\d+?)\\)");
 
-    private ConfigurationService configuration;
     private JdbcConnectionPool cp;
     private Server server;
-
-    private String username = "user";
-    private String password = "password";
-    private String port = "8082";
 
     @Override
     public void processRecord(String record) throws ProcessingException {
@@ -54,7 +66,7 @@ public class H2WriteServiceImpl implements WriteService {
             try {
                 formattedValue = getFormattedValue(rawValue, processor.getColumn().getDataType(), processor.getColumn().getDataFormat());
             } catch (Exception e) {
-                throw new ProcessingException("Exception formatting field value. Column:" + fields[i] + " raw value:[" + rawValue + "], format:[" + processor.getColumn().getDataFormat() + "]. Record:["+record+"]", e);
+                throw new ProcessingException("Exception formatting field value. Column:" + fields[i] + " raw value:[" + rawValue + "], format:[" + processor.getColumn().getDataFormat() + "]. Record:[" + record + "]", e);
 
             }
 
@@ -107,44 +119,43 @@ public class H2WriteServiceImpl implements WriteService {
     }
 
     @Override
-    public void initialize() throws Exception {
-        CommandLine commandLine = configuration.getCommandLine();
-        if (commandLine.hasOption(Parameter.H2_SERVER_PORT.getShortName())) {
-            port = commandLine.getOptionValue(Parameter.H2_SERVER_PORT.getShortName());
-        }
-        if (commandLine.hasOption(Parameter.H2_USERNAME.getShortName())) {
-            username = commandLine.getOptionValue(Parameter.H2_USERNAME.getShortName());
-        }
-        if (commandLine.hasOption(Parameter.H2_PASSWORD.getShortName())) {
-            password = commandLine.getOptionValue(Parameter.H2_PASSWORD.getShortName());
-        }
+    public void initialize() throws ConfigurationException {
+        // init attributes map
+        super.initialize();
 
-        Class.forName("org.h2.Driver").newInstance();
-        String serverUri = H2_SERVER_URI;
-        if(configuration.getCommandLine().hasOption(Parameter.DEBUG.getShortName())){
-            serverUri = serverUri + DEBUG_TRACE_OPTION;
-        }
-        cp = JdbcConnectionPool.create(serverUri, username, password);
-        // create & start embedded H2 Server
-        server = Server.createWebServer("-web", "-webAllowOthers", "-webPort", port).start();
-        Connection conn = cp.getConnection();
-
-        // create table
-        StringBuilder sqlCreateTable = new StringBuilder();
-        sqlCreateTable.append("create table ").append(TABLE_NAME).append("(");
-        for (int i = 0; i < configuration.getProcessors().size(); i++) {
-            ColumnProcessor processor = configuration.getProcessors().get(i);
-            if (i > 0) {
-                sqlCreateTable.append(", ");
+        try {
+            // init driver
+            Class.forName("org.h2.Driver").newInstance();
+            String serverUri = H2_SERVER_URI;
+            if ("true".equalsIgnoreCase(this.<String>getAttributeValue(ATTR_DEBUG))) {
+                serverUri = serverUri + DEBUG_TRACE_OPTION;
             }
-            // it's not safe to assign datatype like this :(
-            sqlCreateTable.append(processor.getColumn().getName())
-                    .append(" ").append(processor.getColumn().getDataType());
+            // create server
+            cp = JdbcConnectionPool.create(serverUri, this.<String>getAttributeValue(ATTR_USERNAME), this.<String>getAttributeValue(ATTR_PASSWORD));
+            // create & start embedded H2 Server
+            server = Server.createWebServer("-web", "-webAllowOthers", "-webPort", this.<String>getAttributeValue(ATTR_PORT)).start();
+            Connection conn = cp.getConnection();
+
+            // create table
+            StringBuilder sqlCreateTable = new StringBuilder();
+            sqlCreateTable.append("create table ").append(TABLE_NAME).append("(");
+            for (int i = 0; i < configuration.getProcessors().size(); i++) {
+                ColumnProcessor processor = configuration.getProcessors().get(i);
+                if (i > 0) {
+                    sqlCreateTable.append(", ");
+                }
+                // it's not safe to assign datatype like this :(
+                sqlCreateTable.append(processor.getColumn().getName())
+                        .append(" ").append(processor.getColumn().getDataType());
+            }
+            sqlCreateTable.append(")");
+            logger.debug("H2> {}", sqlCreateTable.toString());
+            conn.prepareStatement(sqlCreateTable.toString()).executeUpdate();
+            conn.close();
+
+        } catch (Exception e) {
+            throw new ConfigurationException("Exception initializing H2 Server", e);
         }
-        sqlCreateTable.append(")");
-        logger.debug("H2> {}", sqlCreateTable.toString());
-        conn.prepareStatement(sqlCreateTable.toString()).executeUpdate();
-        conn.close();
     }
 
     @Override
@@ -153,11 +164,19 @@ public class H2WriteServiceImpl implements WriteService {
         server.shutdown();
     }
 
-    public void setConfiguration(ConfigurationService configuration) {
-        this.configuration = configuration;
-    }
-
-    public String getPort() {
-        return port;
+    @Override
+    public String getSuccessHint() {
+        StringBuilder builder = new StringBuilder();
+        try {
+            builder
+                    .append("Open http://")
+                    .append(Inet4Address.getLocalHost().getHostAddress())
+                    .append(":")
+                    .append(getAttributeValue(ATTR_PORT))
+                    .append(" or press <Ctrl+C> to exit...");
+        } catch (UnknownHostException e) {
+            logger.error("Exception printing H2 command prompt hint", e);
+        }
+        return builder.toString();
     }
 }

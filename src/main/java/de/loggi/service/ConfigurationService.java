@@ -27,6 +27,8 @@ public interface ConfigurationService {
 
     CommandLine getCommandLine();
 
+    WriteService getWriter() throws ConfigurationException;
+
     void setCommandLine(CommandLine commandLine);
 
     List<ColumnProcessor> getProcessors();

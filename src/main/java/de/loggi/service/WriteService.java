@@ -1,13 +1,16 @@
 package de.loggi.service;
 
+import de.loggi.exceptions.ConfigurationException;
 import de.loggi.exceptions.ProcessingException;
 
 /**
  * @author CptSpaetzle
  */
-//TODO should we be able to create column processors which return other columns dependent values
 public interface WriteService {
+    void setConfigurationService (ConfigurationService configurationService);
     void processRecord(String record) throws ProcessingException;
-    void initialize() throws Exception;
+    void initialize() throws ConfigurationException;
+    public <V> V getAttributeValue(String key) throws ConfigurationException;
     void finalizeAndShutdown();
+    String getSuccessHint();
 }

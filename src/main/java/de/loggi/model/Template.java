@@ -5,16 +5,16 @@ package de.loggi.model;
  */
 public class Template {
 
-    String dbMode = "memory";
+    Writer writer;
     String recordSeparator = "";
     Column[] columns;
 
-    public String getDbMode() {
-        return dbMode;
+    public Writer getWriter() {
+        return writer;
     }
 
-    public void setDbMode(String dbMode) {
-        this.dbMode = dbMode;
+    public void setWriter(Writer writer) {
+        this.writer = writer;
     }
 
     public Column[] getColumns() {

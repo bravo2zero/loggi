@@ -9,5 +9,4 @@ public interface HelpService {
 
     void printUsage(Options options);
     void printHelp(Options options);
-    void printH2PromptHint(String port);
 }

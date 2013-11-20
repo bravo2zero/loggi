@@ -2,9 +2,11 @@ package de.loggi.service.impl;
 
 import de.loggi.exceptions.ConfigurationException;
 import de.loggi.model.Column;
+import de.loggi.model.Parameter;
 import de.loggi.model.Template;
 import de.loggi.processors.ColumnProcessor;
 import de.loggi.service.ConfigurationService;
+import de.loggi.service.WriteService;
 import de.loggi.util.FileUtils;
 import org.apache.commons.cli.CommandLine;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,6 +28,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private List<ColumnProcessor> processors;
     private List<Path> sourceFiles;
     private CommandLine commandLine;
+    private WriteService writer;
 
 
     @Override
@@ -50,6 +53,24 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             logger.error("Exception reading configuration from template", ex);
             throw new ConfigurationException("Exception reading configuration from template [" + templatePath.toString() + "]", ex);
         }
+    }
+
+    @Override
+    public WriteService getWriter() throws ConfigurationException {
+        if (writer == null) {
+            if (template.getWriter() == null) {
+                throw new ConfigurationException("No writer configured in provided template: " + commandLine.getOptionValue(Parameter.TEMPLATE.getShortName()));
+            }
+            try {
+                Class writerClass = Class.forName(template.getWriter().getWriterClass());
+                writer = (WriteService) writerClass.getConstructor().newInstance();
+                writer.setConfigurationService(this);
+                writer.initialize();
+            } catch (Exception ex) {
+                throw new ConfigurationException("Exception initializing writer", ex);
+            }
+        }
+        return writer;
     }
 
     private void initializeColumn(Column column) {
@@ -103,8 +124,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         case1 - simple - some-file.ext
         */
 
-        source = source.replace("'","").replace(";","");
-        logger.debug("source:{}",source);
+        source = source.replace("'", "").replace(";", "");
+        logger.debug("source:{}", source);
         final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/" + source);
         Path userDir = FileSystems.getDefault().getPath(System.getProperty("user.dir"));
         Path searchPath = FileUtils.getAbsolutePathFromPath(source, userDir);
@@ -118,7 +139,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if(matcher.matches(file)){
+                    if (matcher.matches(file)) {
                         getSources().add(file);
                     }
                     return FileVisitResult.CONTINUE;
