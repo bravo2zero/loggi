@@ -5,6 +5,7 @@ import de.loggi.exceptions.ProcessingException;
 import de.loggi.processors.AttributeDef;
 import de.loggi.processors.ColumnProcessor;
 import de.loggi.processors.MetaInfo;
+import org.h2.jdbc.JdbcSQLException;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.tools.Server;
 import org.slf4j.Logger;
@@ -45,11 +46,12 @@ public class H2WriteServiceImpl extends AbstractWriteServiceImpl {
 
     public static final String TABLE_NAME = "records";
     public static final String H2_DATETIME = "yyyy-MM-dd HH:mm:ss";
-    public static final String H2_SERVER_URI = "jdbc:h2:mem:loggi;DB_CLOSE_DELAY=-1";
+    public static final String H2_MEMORY_SERVER_URI = "jdbc:h2:mem:loggi;DB_CLOSE_DELAY=-1";
     public static final String DEBUG_TRACE_OPTION = ";TRACE_LEVEL_SYSTEM_OUT=3";
 
     public static final Pattern REGEX_PRECISION = Pattern.compile("\\((\\d+?)\\)");
 
+    private String serverUri;
     private JdbcConnectionPool cp;
     private Server server;
 
@@ -126,17 +128,20 @@ public class H2WriteServiceImpl extends AbstractWriteServiceImpl {
         try {
             // init driver
             Class.forName("org.h2.Driver").newInstance();
-            String serverUri = H2_SERVER_URI;
-            if ("true".equalsIgnoreCase(this.<String>getAttributeValue(ATTR_DEBUG))) {
-                serverUri = serverUri + DEBUG_TRACE_OPTION;
-            }
             // create server
-            cp = JdbcConnectionPool.create(serverUri, this.<String>getAttributeValue(ATTR_USERNAME), this.<String>getAttributeValue(ATTR_PASSWORD));
+            cp = JdbcConnectionPool.create(getServerUri(), this.<String>getAttributeValue(ATTR_USERNAME), this.<String>getAttributeValue(ATTR_PASSWORD));
             // create & start embedded H2 Server
             server = Server.createWebServer("-web", "-webAllowOthers", "-webPort", this.<String>getAttributeValue(ATTR_PORT)).start();
             Connection conn = cp.getConnection();
 
-            // create table
+            // recreate table
+            try {
+                StringBuilder sqlDropTable = new StringBuilder();
+                sqlDropTable.append("drop table ").append(TABLE_NAME);
+                conn.prepareStatement(sqlDropTable.toString()).executeUpdate();
+            } catch (JdbcSQLException exc) {
+                logger.debug("Exception dropping the records table", exc);// ignore that, no table yet
+            }
             StringBuilder sqlCreateTable = new StringBuilder();
             sqlCreateTable.append("create table ").append(TABLE_NAME).append("(");
             for (int i = 0; i < configuration.getProcessors().size(); i++) {
@@ -158,6 +163,30 @@ public class H2WriteServiceImpl extends AbstractWriteServiceImpl {
         }
     }
 
+    private String getServerUri() throws ConfigurationException {
+        if (serverUri == null) {
+            configServerUri();
+        }
+        return serverUri;
+    }
+
+    public void configServerUri() throws ConfigurationException {
+        switch (this.<String>getAttributeValue(ATTR_MODE)) {
+            case "disk":
+                this.serverUri = "jdbc:h2:" + TABLE_NAME;
+                break;
+            case "memory":
+                this.serverUri = H2_MEMORY_SERVER_URI;
+                break;
+            default:
+                throw new ConfigurationException("Unknown 'mode' attribute value: '" + this.<String>getAttributeValue(ATTR_MODE) + "' ");
+        }
+
+        if ("true".equalsIgnoreCase(this.<String>getAttributeValue(ATTR_DEBUG))) {
+            serverUri = serverUri + DEBUG_TRACE_OPTION;
+        }
+    }
+
     @Override
     public void finalizeAndShutdown() {
         cp.dispose();
@@ -173,8 +202,8 @@ public class H2WriteServiceImpl extends AbstractWriteServiceImpl {
                     .append(Inet4Address.getLocalHost().getHostAddress())
                     .append(":")
                     .append(getAttributeValue(ATTR_PORT))
-                    .append(" or press <Ctrl+C> to exit...");
-        } catch (UnknownHostException e) {
+                    .append(" with connection string '").append(getServerUri()).append("' or press <Ctrl+C> to exit...");
+        } catch (Exception e) {
             logger.error("Exception printing H2 command prompt hint", e);
         }
         return builder.toString();
