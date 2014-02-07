@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @MetaInfo(
         description = "H2 Database writer. Brings up embedded H2 server and writes output to 'record' table.",
         attributes = {
-                @AttributeDef(name = H2WriteServiceImpl.ATTR_MODE, description = "H2 embedded mode (memory, disk)", defaultValue = "memory"),
+                @AttributeDef(name = H2WriteServiceImpl.ATTR_MODE, description = "H2 embedded mode: [memory|file]", defaultValue = "memory"),
                 @AttributeDef(name = H2WriteServiceImpl.ATTR_PORT, description = "Port to be used by H2 Server", defaultValue = "8082"),
                 @AttributeDef(name = H2WriteServiceImpl.ATTR_USERNAME, description = "Login username", defaultValue = "user"),
                 @AttributeDef(name = H2WriteServiceImpl.ATTR_PASSWORD, description = "Login password", defaultValue = "password"),
@@ -172,7 +172,7 @@ public class H2WriteServiceImpl extends AbstractWriteServiceImpl {
 
     public void configServerUri() throws ConfigurationException {
         switch (this.<String>getAttributeValue(ATTR_MODE)) {
-            case "disk":
+            case "file":
                 this.serverUri = "jdbc:h2:" + TABLE_NAME;
                 break;
             case "memory":
