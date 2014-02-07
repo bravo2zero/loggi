@@ -39,7 +39,7 @@ public class SplitProcessor extends AbstractColumnProcessor {
             return columns[columnIndex];
         }
 
-        logger.error("Column #{} not found. Column name:{}. Returning default value", columnIndex, getColumn().getName());
+        logger.debug("Column #{} not found. Column name:{}. Returning default value", columnIndex, getColumn().getName());
         return getColumn().getDefaultValue();
     }
 }
