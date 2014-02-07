@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class ReadServiceImpl implements ReadService {
 
-    private static final long SLEEPTIME = 1000;
+    private static final long SLEEPTIME = 10000;
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ConfigurationService configuration;
@@ -33,6 +34,7 @@ public class ReadServiceImpl implements ReadService {
     private ThreadPoolExecutor executor;
     private int numberOfThreads = 0;
     private int maxRecordLength = 50000;
+    private double memoryUsageThreshold = 80d;
 
     @Override
     public void process() {
@@ -40,6 +42,16 @@ public class ReadServiceImpl implements ReadService {
 
         for (Path sourceFile : configuration.getSources()) {
             processFile(sourceFile);
+            // prevent OOM, wait for the queue size to drop
+            // TODO should improve implementation to limit record submits by some constant number instead of by file (otherwise some huge file could still cause oom problems)
+            while (getUsedMemoryPercent() > memoryUsageThreshold && executor.getQueue().size() > 0) {
+                try {
+                    System.out.println("Memory usage threshold reached.. waiting for the queue to go down. queueSize:" + executor.getQueue().size() + " memUsage:" + new DecimalFormat("#.00").format(getUsedMemoryPercent()));
+                    Thread.sleep(SLEEPTIME);
+                } catch (InterruptedException e) {
+                    logger.error("Exception waiting for the queue to free up", e);
+                }
+            }
         }
         //wait for the executor to finish, print out progress bar
         executor.shutdown();
@@ -78,7 +90,7 @@ public class ReadServiceImpl implements ReadService {
             StringBuilder currentRecord = new StringBuilder();
             while ((currentLine = reader.readLine()) != null) {
                 if (currentRecord.length() > maxRecordLength) {
-                    throw new IOException("maxRecordLength overflow, check if your separator is correct!");  //TODO fix me
+                    throw new IOException("maxRecordLength overflow, check if your separator is correct!");
                 }
                 // TODO warning! - do not use groups in record separator! - fix me
                 Matcher matcher = separator.matcher(currentLine);
@@ -99,7 +111,7 @@ public class ReadServiceImpl implements ReadService {
         } catch (IOException ex) {
             logger.error("Error reading source [" + configuration.getSources().toString() + "]", ex);
         }
-        System.out.println( file.toAbsolutePath() + ": done reading, " + numberOfRecords + " records submitted.");
+        System.out.println(file.toAbsolutePath() + ": done. submited:" + numberOfRecords + " queueSize:" + executor.getQueue().size() + " memoryUsage:" + new DecimalFormat("#.00").format(getUsedMemoryPercent()));
     }
 
     private void initialize() {
@@ -138,6 +150,18 @@ public class ReadServiceImpl implements ReadService {
 
     public void setMaxRecordLength(int maxRecordLength) {
         this.maxRecordLength = maxRecordLength;
+    }
+
+    /**
+     * Returns amount of Heap used in percents
+     *
+     * @return
+     */
+    public double getUsedMemoryPercent() {
+        Runtime runtime = Runtime.getRuntime();
+        double maxMemoryMb = runtime.maxMemory() / (1024 * 1024);
+        double usedMemoryMb = runtime.totalMemory() / (1024 * 1024);
+        return (usedMemoryMb / maxMemoryMb) * 100;
     }
 
     class RecordTask implements Callable<Object> {
