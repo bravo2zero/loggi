@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class ReadServiceImpl implements ReadService {
 
-    private static final long SLEEPTIME = 10000;
+    private static final long SLEEPTIME = 1000;
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ConfigurationService configuration;
