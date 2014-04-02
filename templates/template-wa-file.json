@@ -1,0 +1,262 @@
+{
+    "writer": {
+            "writerClass":"de.loggi.service.writers.H2WriteServiceImpl",
+            "attributes":[
+                {"name":"mode","value":"file"}
+            ]
+        },
+    "recordSeparator":"^",
+    "columns":[
+        {
+            "name":"starttime",
+            "defaultValue":"undefined",
+            "dataType":"datetime",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"0"}
+            ],
+            "transformers":[
+                {"type":"de.loggi.processors.impl.TimestampProcessor"}
+            ]
+        },
+        {
+            "name":"remoteIP",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"1"}
+            ]
+        },
+        {
+            "name":"remoteUser",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"2"}
+            ]
+        },
+        {
+            "name":"serverName",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"3"}
+            ]
+        },
+        {
+            "name":"serverPort",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"4"}
+            ]
+        },
+        {
+            "name":"requestRuntime",
+            "defaultValue":"",
+            "dataType":"int",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"5"}
+            ]
+        },
+        {
+            "name":"requestPath",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"6"}
+            ]
+        },
+        {
+            "name":"userAgent",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"7"}
+            ]
+        },
+        {
+            "name":"cookies",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"8"}
+            ]
+        },
+        {
+            "name":"referrer",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"9"}
+            ]
+        },
+        {
+            "name":"sessionId",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"10"}
+            ]
+        },
+        {
+            "name":"requestId",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"11"}
+            ]
+        },
+        {
+            "name":"responseSource",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"12"}
+            ]
+        },
+        {
+            "name":"responseStatus",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"13"}
+            ]
+        },
+        {
+            "name":"requestReceiveTime",
+            "defaultValue":"",
+            "dataType":"int",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"14"}
+            ]
+        },
+        {
+            "name":"requestQueueWaitTime",
+            "defaultValue":"",
+            "dataType":"int",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"15"}
+            ]
+        },
+        {
+            "name":"requestProcessingTime",
+            "defaultValue":"",
+            "dataType":"int",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"16"}
+            ]
+        },
+        {
+            "name":"responseResolveTime",
+            "defaultValue":"",
+            "dataType":"int",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"17"}
+            ]
+        },
+        {
+            "name":"responseTransferTime",
+            "defaultValue":"",
+            "dataType":"int",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"18"}
+            ]
+        },
+        {
+            "name":"requestMethod",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"19"}
+            ]
+        },
+        {
+            "name":"pgid",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"20"}
+            ]
+        },
+        {
+            "name":"pgidState",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"21"}
+            ]
+        },
+        {
+            "name":"personalizedFlag",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"22"}
+            ]
+        },
+        {
+            "name":"requestType",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"23"}
+            ]
+        },
+        {
+            "name":"responseSize",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"24"}
+            ]
+        },
+        {
+            "name":"topLevelBytesTransmitted",
+            "defaultValue":"",
+            "dataType":"int",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"25"}
+            ]
+        },
+        {
+            "name":"secureFlag",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"26"}
+            ]
+        },
+        {
+            "name":"robotFlag",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"27"}
+            ]
+        },
+        {
+            "name":"binaryFlag",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"28"}
+            ]
+        },
+        {
+            "name":"responseHttpStatus",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.SplitProcessor",
+            "attributes":[
+                {"name":"column", "value":"29"}
+            ]
+        }
+    ]
+};

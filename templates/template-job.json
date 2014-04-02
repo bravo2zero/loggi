@@ -1,0 +1,66 @@
+{
+    "writer": {
+            "writerClass":"de.loggi.service.writers.H2WriteServiceImpl",
+            "attributes":[
+                {"name":"mode","value":"memory"}
+            ]
+        },
+    "recordSeparator":"\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3} .+?[\\+\\-]\\d{4}\\]",
+    "columns":[
+        {
+            "name":"datetime",
+            "defaultValue":"undefined",
+            "dataType":"datetime",
+            "dataFormat":"yyyy-MM-dd HH:mm:ss.SSS z",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\[(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3} (.+?\\+|\\-)\\d{4})\\]"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"level",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(ERROR|WARN|INFO)"}
+            ]
+        },
+        {
+             "name":"jobname",
+             "defaultValue":"undefined",
+             "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+             "attributes":[
+                 {"name":"regex", "value":"\\[Job:(.+?)\\]"},
+                 {"name":"group", "value":"1"}
+             ]
+        },
+        {
+             "name":"req",
+             "defaultValue":"undefined",
+             "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+             "attributes":[
+                 {"name":"regex", "value":"\\[Req:(.+?)\\]"},
+                 {"name":"group", "value":"1"}
+             ]
+        },
+        {
+            "name":"class",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\[.*\\] (INFO|WARN|ERROR) (.*)-(.*)"},
+                {"name":"group", "value":"2"}
+            ]
+        },
+        {
+            "name":"desc",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\[.*\\] (INFO|WARN|ERROR) (.*)-(.*)"},
+                {"name":"group", "value":"3"}
+            ]
+        }
+    ]
+}
