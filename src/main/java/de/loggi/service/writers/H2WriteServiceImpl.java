@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
                 @AttributeDef(name = H2WriteServiceImpl.ATTR_PORT, description = "Port to be used by H2 Server", defaultValue = "8082"),
                 @AttributeDef(name = H2WriteServiceImpl.ATTR_USERNAME, description = "Login username", defaultValue = "user"),
                 @AttributeDef(name = H2WriteServiceImpl.ATTR_PASSWORD, description = "Login password", defaultValue = "password"),
+                @AttributeDef(name = H2WriteServiceImpl.ATTR_LOCALE, description = "Locale to be used when parsing datetime field values", defaultValue = "en_US"),
                 @AttributeDef(name = H2WriteServiceImpl.ATTR_DEBUG, description = "Print out SQL Statements for debug purposes (false|true)", defaultValue = "false")
         }
 )
@@ -43,6 +45,7 @@ public class H2WriteServiceImpl extends AbstractWriteServiceImpl {
     public static final String ATTR_USERNAME = "user";
     public static final String ATTR_PASSWORD = "password";
     public static final String ATTR_DEBUG = "debug";
+    public static final String ATTR_LOCALE = "locale";
 
     public static final String TABLE_NAME = "records";
     public static final String H2_DATETIME = "yyyy-MM-dd HH:mm:ss";
@@ -112,7 +115,7 @@ public class H2WriteServiceImpl extends AbstractWriteServiceImpl {
         }
         // adjust date to H2 internal format
         if (dataType.toLowerCase().startsWith("datetime") && !dataFormat.isEmpty()) {
-            SimpleDateFormat dt = new SimpleDateFormat(dataFormat);
+            SimpleDateFormat dt = new SimpleDateFormat(dataFormat, new Locale(this.<String>getAttributeValue(ATTR_LOCALE)));
             Date date = dt.parse(columnValue);
             SimpleDateFormat h2dt = new SimpleDateFormat(H2_DATETIME);
             return "'" + h2dt.format(date) + "'";
