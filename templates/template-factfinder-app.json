@@ -1,0 +1,51 @@
+{
+    "writer": {
+            "writerClass":"de.loggi.service.writers.H2WriteServiceImpl",
+            "attributes":[
+                {"name":"mode","value":"memory"}
+            ]
+        },
+    2014-07-27 00:01:54,285
+	"recordSeparator":"^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}",
+    "columns":[
+        {
+            "name":"datetime",
+            "defaultValue":"undefined",
+            "dataType":"datetime",
+            "dataFormat":"yyyy-MM-dd HH:mm:ss,SSS",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}"}                
+            ]
+        },
+        {
+            "name":"level",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(ERROR|WARN|INFO|DEBUG|TRACE)"}
+            ]
+        },
+        {
+            "name":"request",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[                
+				{"name":"regex", "value":"^.+?\\[(.+?)\\]"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"message",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",            
+			"attributes":[
+				
+				2014-07-27 00:02:38,270 ERROR [FactfinderServer-/webservice/ws69/Search--331232 (active)] org.codeh
+				
+                {"name":"regex", "^.+?\\[.+?\\]\\s(.+?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        }
+    ]
+}
