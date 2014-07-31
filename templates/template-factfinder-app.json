@@ -5,8 +5,7 @@
                 {"name":"mode","value":"memory"}
             ]
         },
-    2014-07-27 00:01:54,285
-	"recordSeparator":"^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}",
+	"recordSeparator" : "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}",
     "columns":[
         {
             "name":"datetime",
@@ -15,7 +14,7 @@
             "dataFormat":"yyyy-MM-dd HH:mm:ss,SSS",
             "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
             "attributes":[
-                {"name":"regex", "value":"\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}"}                
+                {"name":"regex", "value":"\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2},\\d{3}"}	
             ]
         },
         {
@@ -35,15 +34,21 @@
                 {"name":"group", "value":"1"}
             ]
         },
+		{
+			"name":"class",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[                
+				{"name":"regex", "value":"^.+?\\[.+?\\]\\s(.+?):.+?$"},
+                {"name":"group", "value":"1"}
+            ]
+		},
         {
             "name":"message",
             "defaultValue":"undefined",
             "processorName":"de.loggi.processors.impl.RegexMatchProcessor",            
-			"attributes":[
-				
-				2014-07-27 00:02:38,270 ERROR [FactfinderServer-/webservice/ws69/Search--331232 (active)] org.codeh
-				
-                {"name":"regex", "^.+?\\[.+?\\]\\s(.+?)$"},
+			"attributes":[						
+                {"name":"regex", "value":"^.+?\\[.+?\\]\\s(.+?)$"},
                 {"name":"group", "value":"1"}
             ]
         }
