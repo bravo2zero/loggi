@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 public class ReadServiceImpl implements ReadService {
 
     private static final long SLEEPTIME = 1000;
+    public static final String NEWLINE = System.getProperty("line.separator");
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ConfigurationService configuration;
@@ -101,9 +102,9 @@ public class ReadServiceImpl implements ReadService {
                         numberOfRecords++;
                         currentRecord = new StringBuilder();
                     }
-                    currentRecord.append(matcher.group(2) + matcher.group(3));
+                    currentRecord.append(matcher.group(2) + matcher.group(3)).append(NEWLINE);
                 } else {
-                    currentRecord.append(currentLine);
+                    currentRecord.append(currentLine).append(NEWLINE);
                 }
             }
             executor.submit(new RecordTask(currentRecord.toString()));
