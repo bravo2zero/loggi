@@ -1,0 +1,120 @@
+{
+    "writer": {
+            "writerClass":"de.loggi.service.writers.H2WriteServiceImpl",
+            "attributes":[
+                {"name":"mode","value":"memory"}
+            ]
+        },
+    "recordSeparator":"\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3} [\\+\\-]\\d{4}.+?\\]",
+    "columns":[
+        {
+            "name":"datetime",
+            "defaultValue":"undefined",
+            "dataType":"datetime",
+            "dataFormat":"yyyy-MM-dd HH:mm:ss.SSS Zz",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\[(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3} (\\+|\\-)\\d{4}.+?)\\]"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"level",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(ERROR|WARN|INFO)"}
+            ]
+        },
+        {
+            "name":"hostname",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"^\\[.+?\\]\\s.+?\\s(.+?)\\s"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"appserver",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"^\\[.+?\\]\\s.+?\\s.+?\\s.+?\\s(.+?)\\s"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"logger",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"\\[.*?\\]\\s\\[.*?\\]\\s(.*?)\\s\\[.*?\\]\\s\\[.*?\\]\\s\\[.*?\\]"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"description",
+            "defaultValue":"undefined",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(?m)\".*?\"\\s(.*?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"param_sku",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(?m)^\\SKU=(.+?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"param_categoryid",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(?m)^CategoryID=(.+?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"param_userid",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(?m)^UserID:\\s(.+?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"param_sessionid",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(?m)^SessionID:\\s(.+?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"param_requestid",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(?m)^RequestID:\\s(.+?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        },
+        {
+            "name":"param_pathinfo",
+            "defaultValue":"",
+            "processorName":"de.loggi.processors.impl.RegexMatchProcessor",
+            "attributes":[
+                {"name":"regex", "value":"(?m)^PathInfo:\\s(.+?)$"},
+                {"name":"group", "value":"1"}
+            ]
+        }
+    ]
+}
