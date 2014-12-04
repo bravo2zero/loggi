@@ -33,7 +33,7 @@ Loggi is a command line tool to analyse practically any log file. The idea is to
 * Run loggi, providing source log file:
 
   ``` bash
-  java -jar loggi.jar -s ${source.log.file}
+  java -jar loggi.jar -t ${template.json.file} -s ${source.log.file}
   ```
 * Once you see a prompt, you can access results through browser (default *http://localhost:8082*):
 <pre>
