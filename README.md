@@ -15,7 +15,7 @@ How to build?
 1. Get a copy of the main git repo:
 
   ```bash
-  git clone https://github.com/CptSpaetzle/loggi.git
+  git clone https://github.com/bravo2zero/loggi.git
   ```
 
 2. Build loggi using Maven:
@@ -29,7 +29,7 @@ How to build?
 How to use?
 -----------
 Loggi is a command line tool to analyse practically any log file. The idea is to write a json based template configuration file to let loggi know how exactly you need the log file to be parsed:
-* Create template file according to your log format and requirements. Check example [templates](https://github.com/CptSpaetzle/loggi/tree/master/templates) and see Wiki documentation on [Template File Format](https://github.com/CptSpaetzle/loggi/wiki/Template-File-Format)
+* Create template file according to your log format and requirements. Check example [templates](https://github.com/bravo2zero/loggi/tree/master/templates) and see Wiki documentation on [Template File Format](https://github.com/bravo2zero/loggi/wiki/Template-File-Format)
 * Run loggi, providing source log file:
 
   ``` bash
@@ -42,8 +42,8 @@ User: user
 Password: password
 </pre>
 * Use H2 Console to manipulate your logs and make further analisys (table 'records').
-* Get more help on loggi from [command-line](https://github.com/CptSpaetzle/loggi/wiki/Help) (parameters, currently available processor types and configuration)
+* Get more help on loggi from [command-line](https://github.com/bravo2zero/loggi/wiki/Help) (parameters, currently available processor types and configuration)
 
 How to contribute?
 ------------------
-Of course the main reason to put Loggi on GitHub was to support the spirit of an open source software development, letting as much people as possible to use and improve this tool. Please feel free to contact [author](https://github.com/CptSpaetzle) if you want to become a Contributor. Any other kind of feedback is very much appreciated.
+Of course the main reason to put Loggi on GitHub was to support the spirit of an open source software development, letting as much people as possible to use and improve this tool. Please feel free to contact [author](https://github.com/bravo2zero) if you want to become a Contributor. Any other kind of feedback is very much appreciated.
